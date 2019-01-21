@@ -8,6 +8,7 @@ typedef std::string label_t;
 
 class msa_t{
 public:
+    msa_t() = default;
     msa_t(const pll_msa_t*);
     size_t count();
     size_t width();
