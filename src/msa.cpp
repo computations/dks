@@ -14,3 +14,7 @@ size_t msa_t::count(){
 size_t msa_t::width(){
     return _sequences[0].size();
 }
+
+char* msa_t::label(size_t i){
+    return _labels[i];
+}

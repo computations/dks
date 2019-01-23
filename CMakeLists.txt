@@ -20,6 +20,8 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     endif()
 endif()
 
+add_subdirectory(lib)
+
 add_subdirectory(src)
 
 add_subdirectory(test)

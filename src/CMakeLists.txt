@@ -2,6 +2,7 @@ add_executable(raxml-dks
     main.cpp
     msa.cpp
     test_case.cpp
+    tree.cpp
 )
 set_target_properties(raxml-dks PROPERTIES
     CXX_STANDARD 11
@@ -9,3 +10,4 @@ set_target_properties(raxml-dks PROPERTIES
 )
 set(${CMAKE_BUILD_TYPE} DEBUG)
 target_include_directories(raxml-dks PRIVATE ${CMAKE_SOURCE_DIR}/lib/libpll/src/)
+target_link_libraries(raxml-dks pll_static)
