@@ -2,5 +2,5 @@
 #include <test_case.h>
 
 TEST_CASE("Default constructor" "[test_case][default][constructor][msa]"){
-    test_case_t t;
+    dks::test_case_t t;
 }

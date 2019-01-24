@@ -1,11 +1,14 @@
 #pragma once
 #include "msa.h"
+#include "tree.h"
+#include "model.h"
 #include <memory>
 #include <pll.h>
 
-typedef uint32_t test_flags_t;
 
 namespace dks{
+    typedef uint32_t test_flags_t;
+
     enum test_cpu_t{
         none,
         sse,
@@ -13,26 +16,23 @@ namespace dks{
         avx2,
         avx512,
     };
+
+    enum test_kernel_t{
+        partial,
+        full,
+        derivative,
+        pmatrix,
+    };
+
+    class test_case_t{
+        public:
+            double benchmark(msa_t, model_t);
+        private:
+            test_cpu_t _cpu;
+            test_kernel_t _kernel;
+            uint64_t _random_seed;
+            bool _site_repeats;
+            bool _tip_inner_optimization;
+            bool _rate_scalers;
+    };
 }
-
-class test_case_t{
-public:
-    unsigned int tips();
-    unsigned int inner_count();
-    unsigned int states();
-    unsigned int sites();
-    unsigned int submodel_count();
-    unsigned int gamma_count();
-    unsigned int scale_buffers();
-    unsigned int attributes();
-
-    std::unique_ptr<pll_partition_t> partition();
-    std::unique_ptr<pll_utree_t> tree();
-private:
-    msa_t _msa;
-    size_t _state_count;
-    size_t _submodel_count;
-    size_t _gamma_class_count;
-    dks::test_cpu_t _cpu;
-    uint64_t _random_seed;
-};

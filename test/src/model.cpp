@@ -1,2 +1,2 @@
-#include <tree.h>
+#include <model.h>
 #include <catch2/catch.hpp>
