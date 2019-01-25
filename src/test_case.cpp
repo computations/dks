@@ -4,7 +4,7 @@
 #include <random>
 
 namespace dks{
-    double dks::test_case_t::benchmark(msa_t msa, model_t model){
-        return -1.0;
+    benchmark_result_t dks::test_case_t::benchmark(msa_t msa, model_t model){
+        return benchmark_result_t();
     }
 }

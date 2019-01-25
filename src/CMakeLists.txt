@@ -3,6 +3,8 @@ add_executable(raxml-dks
     msa.cpp
     test_case.cpp
     tree.cpp
+    partition.cpp
+    model.cpp
 )
 set_target_properties(raxml-dks PROPERTIES
     CXX_STANDARD 11

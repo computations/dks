@@ -2,13 +2,11 @@
 #include "msa.h"
 #include "tree.h"
 #include "model.h"
-#include <memory>
 #include <pll.h>
-
+#include <memory>
+#include <unordered_map>
 
 namespace dks{
-    typedef uint32_t test_flags_t;
-
     enum test_cpu_t{
         none,
         sse,
@@ -19,17 +17,18 @@ namespace dks{
 
     enum test_kernel_t{
         partial,
-        full,
+        likelihood,
         derivative,
         pmatrix,
     };
 
+    typedef std::unordered_map<test_kernel_t, double> benchmark_result_t;
+
     class test_case_t{
         public:
-            double benchmark(msa_t, model_t);
+            benchmark_result_t benchmark(msa_t, model_t);
         private:
             test_cpu_t _cpu;
-            test_kernel_t _kernel;
             uint64_t _random_seed;
             bool _site_repeats;
             bool _tip_inner_optimization;
