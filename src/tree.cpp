@@ -3,29 +3,34 @@
 #include <random>
 
 namespace dks{
-    tree_t::tree_t(msa_t msa, uint64_t random_seed) {
-        _tree.tip_count = msa.count();
-        _tree.edge_count = 2*_tree.tip_count - 3;
-        _tree.inner_count = _tree.tip_count - 2;
+    int full_traverse_cb(pll_unode_t* n){
+        return PLL_SUCCESS;
+    }
 
-        _tree.vroot = make_triplet(
+    tree_t::tree_t(const msa_t& msa, uint64_t random_seed) {
+        size_t tip_count = msa.count();
+        size_t edge_count = 2 * tip_count - 3;
+        size_t inner_count = tip_count - 2;
+
+        pll_unode_t* vroot = make_triplet(
                 make_tip(msa.label(0)),
                 make_tip(msa.label(1)),
                 make_tip(msa.label(2))
             );
+
         //generate a list of nodes
-        size_t node_buffer_size = _tree.tip_count + 3 * _tree.inner_count;
+        size_t node_buffer_size = tip_count + 3 * inner_count;
         pll_unode_t** nodes = (pll_unode_t**)malloc(sizeof(pll_unode_t*) *
                 node_buffer_size);
 
         std::minstd_rand random_engine(random_seed);
 
-        for (size_t i = 3; i < _tree.tip_count ; i++) {
+        for (size_t i = 3; i < tip_count ; i++) {
             unsigned int node_count;
             pll_utree_traverse(
-                    _tree.vroot,
+                    vroot,
                     PLL_TREE_TRAVERSE_POSTORDER,
-                    nullptr,
+                    full_traverse_cb,
                     nodes,
                     &node_count);
 
@@ -33,16 +38,26 @@ namespace dks{
             pll_unode_t* insert_node = nodes[roller(random_engine)];
             insert_tip(insert_node, msa.label(i));
         }
+        _tree = pll_utree_wraptree(vroot, tip_count);
+        free(nodes);
     }
 
     tree_t::~tree_t(){
-        free(_tree.nodes);
+        pll_utree_destroy(_tree, nullptr);
     }
 
-    void tree_t::insert_tip(pll_unode_t* insert_node, char* label){
-        pll_unode_t* new_a = (pll_unode_t*)malloc(sizeof(pll_unode_t));
-        pll_unode_t* new_b = (pll_unode_t*)malloc(sizeof(pll_unode_t));
-        pll_unode_t* new_c = (pll_unode_t*)malloc(sizeof(pll_unode_t));
+    pll_unode_t* tree_t::vroot() const{
+        return _tree->vroot;
+    }
+
+    size_t tree_t::node_count() const{
+        return _tree->tip_count + _tree->inner_count;
+    }
+
+    void tree_t::insert_tip(pll_unode_t* insert_node, const char* label){
+        pll_unode_t* new_a = make_node();
+        pll_unode_t* new_b = make_node();
+        pll_unode_t* new_c = make_node();
         pll_unode_t* new_tip = make_tip(label);
 
         pll_unode_t* saved_back = insert_node->back;
@@ -52,9 +67,6 @@ namespace dks{
         pair_nodes(new_tip, new_c);
 
         make_circle(new_a, new_b, new_c);
-
-        new_tip->label = label;
-        new_tip->next = nullptr;
     }
 
     void tree_t::pair_nodes(pll_unode_t* a, pll_unode_t* b){
@@ -69,9 +81,9 @@ namespace dks{
     }
 
     pll_unode_t* tree_t::make_triplet(pll_unode_t* a, pll_unode_t* b, pll_unode_t* c){
-        pll_unode_t* inner_a = (pll_unode_t*)malloc(sizeof(pll_unode_t));
-        pll_unode_t* inner_b = (pll_unode_t*)malloc(sizeof(pll_unode_t));
-        pll_unode_t* inner_c = (pll_unode_t*)malloc(sizeof(pll_unode_t));
+        pll_unode_t* inner_a = make_node();
+        pll_unode_t* inner_b = make_node();
+        pll_unode_t* inner_c = make_node();
 
         pair_nodes(inner_a, a);
         pair_nodes(inner_b, b);
@@ -81,11 +93,15 @@ namespace dks{
         return inner_a;
     }
 
-    pll_unode_t* tree_t::make_tip(char* label){
+    pll_unode_t* tree_t::make_node(){
         pll_unode_t* a = (pll_unode_t*)malloc(sizeof(pll_unode_t));
-        a->label = label;
+        a->label = nullptr;
         a->next = nullptr;
         a->back = nullptr;
         return a;
+    }
+
+    pll_unode_t* tree_t::make_tip(const char* label){
+        return make_node();
     }
 }

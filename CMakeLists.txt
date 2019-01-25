@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 cmake_policy(SET CMP0048 NEW)
-project(terror)
+project(dks)
 
 set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 

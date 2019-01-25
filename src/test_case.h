@@ -26,12 +26,28 @@ namespace dks{
 
     class test_case_t{
         public:
-            benchmark_result_t benchmark(msa_t, model_t);
+            test_case_t() = default;
+            test_case_t(
+                    test_cpu_t cpu,
+                    bool pt,
+                    bool sr,
+                    bool rs,
+                    uint64_t seed):
+                _cpu(cpu),
+                _random_seed(seed),
+                _pattern_tip(pt),
+                _site_repeats(sr),
+                _rate_scalers(rs) {}
+
+            benchmark_result_t benchmark(const msa_t&, const model_t&);
+            unsigned int attributes() const;
+            unsigned int cpu_attributes() const;
+            unsigned int misc_attributes() const;
         private:
             test_cpu_t _cpu;
             uint64_t _random_seed;
+            bool _pattern_tip;
             bool _site_repeats;
-            bool _tip_inner_optimization;
             bool _rate_scalers;
     };
 }
