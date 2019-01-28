@@ -7,7 +7,7 @@
 namespace dks{
     class model_t{
         public:
-            model_t(const msa_t& msa): _tree(msa, 0){};
+            model_t(const msa_t& msa): _tree(msa, 0), _subst_params(6, 0.0){};
             model_t(const msa_t& msa, uint64_t seed): _tree(msa, seed){};
             unsigned int submodels() const;
             unsigned int rate_categories() const;

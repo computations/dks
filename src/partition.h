@@ -34,6 +34,6 @@ namespace dks{
             void initialize_tips(const msa_t&);
             void initialize_rates(const model_t& model);
         private:
-            std::unique_ptr<pll_partition_t> _partition;
+            pll_partition_t* _partition;
     };
 }

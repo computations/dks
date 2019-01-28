@@ -1,6 +1,5 @@
 #include "test_case.h"
 #include "partition.h"
-#include <iostream>
 #include <random>
 #include <exception>
 

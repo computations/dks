@@ -26,7 +26,12 @@ namespace dks{
 
     class test_case_t{
         public:
-            test_case_t() = default;
+            test_case_t() : 
+                _cpu(test_cpu_t::none),
+                _random_seed(0),
+                _pattern_tip(0),
+                _site_repeats(0),
+                _rate_scalers(0) {}
             test_case_t(
                     test_cpu_t cpu,
                     bool pt,

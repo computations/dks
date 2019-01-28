@@ -85,7 +85,7 @@ namespace dks{
     }
 
     size_t msa_t::states() const{
-        return _states;
+        return 4;
     }
 
     const char* msa_t::label(size_t i) const{
