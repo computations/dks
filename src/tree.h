@@ -9,6 +9,7 @@ namespace dks{
             tree_t(const msa_t& msa): tree_t(msa, 0) {}
             pll_unode_t* vroot() const;
             size_t node_count() const;
+            const std::vector<double>& branch_lengths() const;
             ~tree_t();
         private:
             static void insert_tip(pll_unode_t*, const char*);
@@ -18,6 +19,9 @@ namespace dks{
             static pll_unode_t* make_node();
             static pll_unode_t* make_tip(const char*);
 
+            void fill_branch_lengths(pll_unode_t** nodes=nullptr);
+
             pll_utree_t* _tree;
+            std::vector<double> _branch_lengths;
     };
 }

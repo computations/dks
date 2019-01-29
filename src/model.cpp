@@ -26,6 +26,10 @@ namespace dks{
         return _frequencies;
     }
 
+    const tree_t& model_t::tree() const{
+        return _tree;
+    }
+
     std::vector<pll_operation_t> model_t::make_operations() const{
         pll_unode_t** traversal_nodes = (pll_unode_t**)malloc(
                 sizeof(pll_unode_t*) * _tree.node_count());

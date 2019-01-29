@@ -9,6 +9,7 @@ namespace dks{
             const model_t& model){
         partition_t partition(msa, model, attributes());
         auto operations = model.make_operations();
+        partition.update_partials(operations);
     }
 
     unsigned int test_case_t::attributes() const{
@@ -39,4 +40,5 @@ namespace dks{
         }
         throw std::runtime_error("Unrecognized CPU type");
     }
+
 }

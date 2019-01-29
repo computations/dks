@@ -104,4 +104,29 @@ namespace dks{
     pll_unode_t* tree_t::make_tip(const char* label){
         return make_node();
     }
+
+    const std::vector<double>& tree_t::branch_lengths() const{
+        return _branch_lengths;
+    }
+
+    void tree_t::fill_branch_lengths(pll_unode_t** nodes){
+        if(nodes == nullptr){
+            nodes = (pll_unode_t**)malloc(node_count() * sizeof(pll_unode_t*));
+        }
+
+        unsigned int node_count = 0;
+
+        pll_utree_traverse(
+                _tree->vroot,
+                PLL_TREE_TRAVERSE_POSTORDER,
+                full_traverse_cb,
+                nodes,
+                &node_count);
+
+        _branch_lengths.resize(node_count, 0.1);
+
+        for (size_t i = 0; i < node_count; i++) {
+            _branch_lengths[i] = nodes[i]->length;
+        }
+    }
 }

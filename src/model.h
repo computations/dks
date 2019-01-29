@@ -19,6 +19,7 @@ namespace dks{
             const std::vector<double>& subst_params() const;
             const double * frequencies_raw() const;
             const std::vector<double>& frequencies() const;
+            const tree_t& tree() const;
 
             std::vector<pll_operation_t> make_operations() const;
         private:

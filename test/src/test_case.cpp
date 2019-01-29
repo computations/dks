@@ -1,7 +1,7 @@
 #include <catch2/catch.hpp>
 #include <test_case.h>
 
-TEST_CASE("test_case_t basic opreations", "[test_case][constructor]"){
+TEST_CASE("test_case_t basic operations", "[test_case][constructor]"){
     dks::test_case_t t;
     SECTION("Attributes"){
         unsigned int cpu_attrs = t.cpu_attributes();
