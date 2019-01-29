@@ -31,18 +31,11 @@ namespace dks{
     }
 
     std::vector<pll_operation_t> model_t::make_operations() const{
-        pll_unode_t** traversal_nodes = (pll_unode_t**)malloc(
-                sizeof(pll_unode_t*) * _tree.node_count());
-        unsigned int traversal_size=0;
-        pll_utree_traverse(_tree.vroot(),
-                           PLL_TREE_TRAVERSE_POSTORDER,
-                           nullptr,
-                           traversal_nodes,
-                           &traversal_size);
-        std::vector<pll_operation_t> operations(traversal_size);
+        auto traversal_nodes = _tree.full_traverse();
+        std::vector<pll_operation_t> operations(traversal_nodes.size());
         unsigned int operations_count = 0;
-        pll_utree_create_operations(traversal_nodes,
-                                    traversal_size,
+        pll_utree_create_operations(traversal_nodes.data(),
+                                    traversal_nodes.size(),
                                     nullptr,
                                     nullptr,
                                     operations.data(),

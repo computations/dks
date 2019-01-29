@@ -10,6 +10,7 @@ namespace dks{
             pll_unode_t* vroot() const;
             size_t node_count() const;
             const std::vector<double>& branch_lengths() const;
+            std::vector<pll_unode_t*> full_traverse() const;
             ~tree_t();
         private:
             static void insert_tip(pll_unode_t*, const char*);

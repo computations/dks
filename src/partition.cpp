@@ -5,7 +5,7 @@ namespace dks{
     constexpr unsigned int partition_t::_params_indices[];
     partition_t::partition_t(const msa_t& msa, const model_t& model, unsigned int attributes){
         unsigned int tip_count = msa.count();
-        unsigned int inner_count = tip_count - 3;
+        unsigned int inner_count = tip_count - 2;
         _partition = pll_partition_create(
                     tip_count,                  //tips
                     inner_count,                //clv_buffers
@@ -52,6 +52,10 @@ namespace dks{
 
     void partition_t::update_partials(const std::vector<pll_operation_t>& ops){
         pll_update_partials(_partition, ops.data(), ops.size());
+    }
+
+    void partition_t::update_partials(const model_t& model){
+        update_partials(model.make_operations());
     }
 
 

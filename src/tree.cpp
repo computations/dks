@@ -39,6 +39,7 @@ namespace dks{
             insert_tip(insert_node, msa.label(i));
         }
         _tree = pll_utree_wraptree(vroot, tip_count);
+        pll_utree_reset_template_indices(vroot, tip_count);
         free(nodes);
     }
 
@@ -107,6 +108,21 @@ namespace dks{
 
     const std::vector<double>& tree_t::branch_lengths() const{
         return _branch_lengths;
+    }
+
+    std::vector<pll_unode_t*> tree_t::full_traverse() const{
+        unsigned int node_number = 0;
+        std::vector<pll_unode_t*> trav_nodes(node_count());
+        //pll_unode_t** nodes = (pll_unode_t**)malloc(node_count() * sizeof(pll_unode_t*));
+        pll_utree_traverse(
+                _tree->vroot,
+                PLL_TREE_TRAVERSE_POSTORDER,
+                full_traverse_cb,
+                trav_nodes.data(),
+                &node_number);
+
+        //free(nodes);
+        return trav_nodes;
     }
 
     void tree_t::fill_branch_lengths(pll_unode_t** nodes){

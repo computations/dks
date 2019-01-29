@@ -36,6 +36,7 @@ namespace dks{
             void update_probability_matrices(const tree_t& tree);
 
             void update_partials(const std::vector<pll_operation_t>&);
+            void update_partials(const model_t& model);
         private:
             pll_partition_t* _partition;
             constexpr static unsigned int _params_indices[] = {0};
