@@ -31,7 +31,7 @@ namespace dks{
 
     void partition_t::initialize_rates(const model_t& model){
         for (size_t i = 0; i < model.submodels(); i++) {
-            pll_set_subst_params(_partition, i, model.subst_params());
+            pll_set_subst_params(_partition, i, model.subst_params_raw());
         }
     }
 

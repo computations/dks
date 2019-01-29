@@ -10,8 +10,20 @@ namespace dks{
         return 1;
     }
 
-    const double * model_t::subst_params() const{
+    const double * model_t::subst_params_raw() const{
         return _subst_params.data();
+    }
+
+    const std::vector<double>& model_t::subst_params() const{
+        return _subst_params;
+    }
+
+    const double * model_t::frequencies_raw() const{
+        return _frequencies.data();
+    }
+
+    const std::vector<double>& model_t::frequencies() const{
+        return _frequencies;
     }
 
     std::vector<pll_operation_t> model_t::make_operations() const{
