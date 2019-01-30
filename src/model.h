@@ -4,8 +4,8 @@
 #include <memory>
 #include <vector>
 
-namespace dks{
-    class model_t{
+namespace dks {
+    class model_t {
         public:
             model_t(const msa_t& msa): model_t(msa, 0){};
             model_t(const msa_t& msa, uint64_t seed): 

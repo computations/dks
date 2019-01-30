@@ -2,8 +2,8 @@
 #include "pll.h"
 #include <random>
 
-namespace dks{
-    int full_traverse_cb(pll_unode_t* n){
+namespace dks {
+    int full_traverse_cb(pll_unode_t* n) {
         return PLL_SUCCESS;
     }
 
@@ -45,7 +45,7 @@ namespace dks{
         free(nodes);
     }
 
-    tree_t::~tree_t(){
+    tree_t::~tree_t() {
         pll_utree_destroy(_tree, nullptr);
     }
 
@@ -61,7 +61,7 @@ namespace dks{
         return _tree->tip_count * 2 - 3;
     }
 
-    void tree_t::insert_tip(pll_unode_t* insert_node, const char* label){
+    void tree_t::insert_tip(pll_unode_t* insert_node, const char* label) {
         pll_unode_t* new_a = make_node();
         pll_unode_t* new_b = make_node();
         pll_unode_t* new_c = make_node();
@@ -76,18 +76,21 @@ namespace dks{
         make_circle(new_a, new_b, new_c);
     }
 
-    void tree_t::pair_nodes(pll_unode_t* a, pll_unode_t* b){
+    void tree_t::pair_nodes(pll_unode_t* a, pll_unode_t* b) {
         a->back = b;
         b->back = a;
     }
 
-    void tree_t::make_circle(pll_unode_t* a, pll_unode_t* b, pll_unode_t* c){
+    void tree_t::make_circle(pll_unode_t* a, pll_unode_t* b, pll_unode_t* c) {
         a->next = b;
         b->next = c;
         c->next = a;
     }
 
-    pll_unode_t* tree_t::make_triplet(pll_unode_t* a, pll_unode_t* b, pll_unode_t* c){
+    pll_unode_t* tree_t::make_triplet(
+            pll_unode_t* a,
+            pll_unode_t* b,
+            pll_unode_t* c) {
         pll_unode_t* inner_a = make_node();
         pll_unode_t* inner_b = make_node();
         pll_unode_t* inner_c = make_node();
@@ -100,7 +103,7 @@ namespace dks{
         return inner_a;
     }
 
-    pll_unode_t* tree_t::make_node(){
+    pll_unode_t* tree_t::make_node() {
         pll_unode_t* a = (pll_unode_t*)malloc(sizeof(pll_unode_t));
         a->label = nullptr;
         a->next = nullptr;
@@ -109,7 +112,7 @@ namespace dks{
         return a;
     }
 
-    pll_unode_t* tree_t::make_tip(const char* label){
+    pll_unode_t* tree_t::make_tip(const char* label) {
         return make_node();
     }
 
@@ -124,7 +127,6 @@ namespace dks{
     std::vector<pll_unode_t*> tree_t::full_traverse() const{
         unsigned int node_number = 0;
         std::vector<pll_unode_t*> trav_nodes(node_count());
-        //pll_unode_t** nodes = (pll_unode_t**)malloc(node_count() * sizeof(pll_unode_t*));
         pll_utree_traverse(
                 _tree->vroot,
                 PLL_TREE_TRAVERSE_POSTORDER,
@@ -132,12 +134,11 @@ namespace dks{
                 trav_nodes.data(),
                 &node_number);
 
-        //free(nodes);
         return trav_nodes;
     }
 
-    void tree_t::fill_branch_lengths(const std::vector<pll_unode_t*>& nodes){
-        if (_branch_lengths.size() != nodes.size()){
+    void tree_t::fill_branch_lengths(const std::vector<pll_unode_t*>& nodes) {
+        if (_branch_lengths.size() != nodes.size()) {
             _branch_lengths.resize(nodes.size(), 0.1);
 
         }
@@ -146,8 +147,8 @@ namespace dks{
         }
     }
 
-    void tree_t::fill_matrix_indices(const std::vector<pll_unode_t*>& nodes){
-        if (_matrix_indices.size() != nodes.size()){
+    void tree_t::fill_matrix_indices(const std::vector<pll_unode_t*>& nodes) {
+        if (_matrix_indices.size() != nodes.size()) {
             _matrix_indices.resize(nodes.size(), 0.1);
 
         }
@@ -156,7 +157,7 @@ namespace dks{
         }
     }
 
-    void tree_t::update_internal_lists(){
+    void tree_t::update_internal_lists() {
         auto nodes = full_traverse();
         fill_branch_lengths(nodes);
         fill_matrix_indices(nodes);

@@ -4,11 +4,11 @@
 #include <iterator>
 #include <pll.h>
 
-namespace dks{
+namespace dks {
     typedef std::vector<char> sequence_t;
     typedef char* label_t;
 
-    class msa_t{
+    class msa_t {
     public:
         msa_t() = default;
         msa_t(const pll_msa_t*);

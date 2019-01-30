@@ -3,24 +3,24 @@
 #include <algorithm>
 #include <iostream>
 
-namespace dks{
-
-    size_t strlen(char* s){
+namespace dks {
+    size_t strlen(char* s) {
         int i = 0;
-        while(true){
-            if (!s[i]){return i+1;}
+        while(true) {
+            if (!s[i]) {return i+1;}
             i++;
         }
     }
 
 
-    msa_t::msa_t(const pll_msa_t* msa){
+    msa_t::msa_t(const pll_msa_t* msa) {
         init(msa);
         _states = 4;
     }
 
-    msa_t::msa_t(const std::string& filename){
-        if(pll_phylip_t* fd = pll_phylip_open(filename.c_str(), pll_map_phylip)){
+    msa_t::msa_t(const std::string& filename) {
+        if(pll_phylip_t* fd =
+                pll_phylip_open(filename.c_str(), pll_map_phylip)) {
             pll_msa_t* pll_msa = nullptr;
             if ((pll_msa = pll_phylip_parse_interleaved(fd)) ||
                 (pll_msa = pll_phylip_parse_sequential(fd))) {
@@ -32,7 +32,7 @@ namespace dks{
                 pll_phylip_close(fd);
             }
         }
-        if(pll_fasta_t* fd = pll_fasta_open(filename.c_str(), pll_map_fasta)){
+        if(pll_fasta_t* fd = pll_fasta_open(filename.c_str(), pll_map_fasta)) {
             char *header = nullptr;
             char *sequence = nullptr;
             long sequence_len = 0;
@@ -41,11 +41,11 @@ namespace dks{
             long expected_sequence_length = 0;
 
             while(pll_fasta_getnext(fd, &header, &header_len, &sequence,
-                        &sequence_len, &sequence_number)){
-                if(expected_sequence_length == 0){
+                        &sequence_len, &sequence_number)) {
+                if(expected_sequence_length == 0) {
                     expected_sequence_length = sequence_len;
                 }
-                else if (expected_sequence_length != sequence_len){
+                else if (expected_sequence_length != sequence_len) {
                     //for(auto l : _labels) {
                         //free(l);
                     //}
@@ -59,13 +59,13 @@ namespace dks{
         }
     }
 
-    msa_t::~msa_t(){
-        for (auto c : _labels){
+    msa_t::~msa_t() {
+        for (auto c : _labels) {
             free(c);
         }
     }
 
-    void msa_t::init(const pll_msa_t* msa){
+    void msa_t::init(const pll_msa_t* msa) {
         for (int i = 0; i < msa->count; i++) {
             size_t label_size = strlen(msa->label[i]);
             _labels.emplace_back((char*) malloc(sizeof(char) * label_size));
@@ -80,7 +80,7 @@ namespace dks{
     }
 
     size_t msa_t::length() const{
-        if (_sequences.empty()){return 0;}
+        if (_sequences.empty()) {return 0;}
         return _sequences.front().size();
     }
 

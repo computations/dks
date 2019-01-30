@@ -4,8 +4,8 @@
 #include <pll.h>
 #include <memory>
 
-namespace dks{
-    class partition_t{
+namespace dks {
+    class partition_t {
         public:
             partition_t(
                     unsigned int tips,
@@ -39,7 +39,9 @@ namespace dks{
             void update_partials(const model_t& model);
 
             double loglh(const model_t& model);
-            std::vector<double> loglh_persite(const model_t& model, size_t sites);
+            std::vector<double> loglh_persite(
+                    const model_t& model,
+                    size_t sites);
         private:
             pll_partition_t* _partition;
             constexpr static unsigned int _params_indices[] = {0};

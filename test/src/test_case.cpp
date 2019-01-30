@@ -2,9 +2,9 @@
 #include <test_case.h>
 #include "data.h"
 
-TEST_CASE("test_case_t basic operations", "[test_case][constructor]"){
+TEST_CASE("test_case_t basic operations", "[test_case][constructor]") {
     dks::test_case_t t;
-    SECTION("Attributes"){
+    SECTION("Attributes") {
         unsigned int cpu_attrs = t.cpu_attributes();
         CHECK((cpu_attrs & PLL_ATTRIB_ARCH_SSE) == 0);
         CHECK((cpu_attrs & PLL_ATTRIB_ARCH_AVX) == 0);
@@ -16,7 +16,7 @@ TEST_CASE("test_case_t basic operations", "[test_case][constructor]"){
     }
 }
 
-TEST_CASE("Benchmarks", "[test_case][benchmarks"){
+TEST_CASE("Benchmarks", "[test_case][benchmarks") {
     dks::test_case_t t;
     dks::msa_t msa(data[1]);
     dks::model_t model(msa);
@@ -27,7 +27,7 @@ TEST_CASE("Benchmarks", "[test_case][benchmarks"){
     CHECK(br[dks::test_kernel_t::derivative].count() >= 0.0);
 }
 
-TEST_CASE("Result type check",  "[test_case][benchmark_result]"){
+TEST_CASE("Result type check",  "[test_case][benchmark_result]") {
     dks::benchmark_result_t res;
     res[dks::test_kernel_t::partial] = std::chrono::duration<double>(1.0);
     CHECK(res[dks::test_kernel_t::partial] == std::chrono::duration<double>(1.0));

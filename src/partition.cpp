@@ -1,10 +1,13 @@
 #include "partition.h"
 #include <pll.h>
 
-namespace dks{
+namespace dks {
     constexpr unsigned int partition_t::_params_indices[];
     constexpr double partition_t::_rate_cats[];
-    partition_t::partition_t(const msa_t& msa, const model_t& model, unsigned int attributes){
+    partition_t::partition_t(
+            const msa_t& msa,
+            const model_t& model,
+            unsigned int attributes) {
         unsigned int tip_count = msa.count();
         unsigned int inner_count = tip_count - 2;
         _partition = pll_partition_create(
@@ -23,7 +26,7 @@ namespace dks{
         update_probability_matrices(model.tree());
     }
 
-    void partition_t::initialize_tips(const msa_t& msa){
+    void partition_t::initialize_tips(const msa_t& msa) {
         for (size_t tip_id = 0; tip_id < msa.count(); tip_id++) {
             pll_set_tip_states(_partition, 
                                 tip_id,
@@ -32,7 +35,7 @@ namespace dks{
         }
     }
 
-    void partition_t::initialize_rates(const model_t& model){
+    void partition_t::initialize_rates(const model_t& model) {
         for (size_t i = 0; i < model.submodels(); i++) {
             pll_set_subst_params(_partition, i, model.subst_params_raw());
             pll_set_frequencies(_partition, i, model.frequencies_raw());
@@ -40,7 +43,7 @@ namespace dks{
         pll_set_category_rates(_partition, _rate_cats);
     }
 
-    void partition_t::update_probability_matrices(const tree_t& tree){
+    void partition_t::update_probability_matrices(const tree_t& tree) {
         pll_update_prob_matrices(_partition,
                                  _params_indices,
                                  tree.matrix_indices().data(),
@@ -48,16 +51,16 @@ namespace dks{
                                  tree.branch_lengths().size());
     }
 
-    void partition_t::update_partials(const std::vector<pll_operation_t>& ops){
+    void partition_t::update_partials(
+            const std::vector<pll_operation_t>& ops) {
         pll_update_partials(_partition, ops.data(), ops.size());
     }
 
-    void partition_t::update_partials(const model_t& model){
+    void partition_t::update_partials(const model_t& model) {
         update_partials(model.make_operations());
     }
 
-    double partition_t::loglh(const model_t& model){
-        //update_partials(model.make_operations());
+    double partition_t::loglh(const model_t& model) {
         pll_unode_t* parent = model.tree().vroot();
         pll_unode_t* child = parent->back;
         return pll_compute_edge_loglikelihood(_partition,
@@ -70,7 +73,9 @@ namespace dks{
                                               nullptr);
     }
 
-    std::vector<double> partition_t::loglh_persite(const model_t& model, size_t sites){
+    std::vector<double> partition_t::loglh_persite(
+            const model_t& model,
+            size_t sites) {
         pll_unode_t* parent = model.tree().vroot();
         pll_unode_t* child = parent->back;
 
@@ -87,7 +92,7 @@ namespace dks{
         return persites;
     }
 
-    partition_t::~partition_t(){
+    partition_t::~partition_t() {
         pll_partition_destroy(_partition);
     }
 }
