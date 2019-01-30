@@ -11,13 +11,42 @@ namespace dks{
         partition_t partition(msa, model, attributes());
         benchmark_result_t br;
 
-        auto t1 = std::chrono::high_resolution_clock::now();
-        partition.update_partials(model);
-        auto t2 = std::chrono::high_resolution_clock::now();
+        br[test_kernel_t::partial] = benchmark_partials(partition, model);
+        br[test_kernel_t::likelihood] = benchmark_likelihood(partition, model);
+        br[test_kernel_t::pmatrix] = benchmark_pmatrix(partition, model);
+        br[test_kernel_t::derivative] = benchmark_derivative(partition, model);
 
-        br[test_kernel_t::partial] = t2 - t1;
-        
         return br;
+    }
+
+    benchmark_time_t test_case_t::benchmark_partials(partition_t& partition, const model_t& model){
+        auto t1 = std::chrono::high_resolution_clock::now();
+        for (size_t i = 0; i < _trials; i++) {
+            partition.update_partials(model);
+        }
+        auto t2 = std::chrono::high_resolution_clock::now();
+        return (t2 - t1)/_trials;
+    }
+
+    benchmark_time_t test_case_t::benchmark_likelihood(partition_t& partition, const model_t& model){
+        partition.update_partials(model);
+        auto t1 = std::chrono::high_resolution_clock::now();
+        for (size_t i = 0; i < _trials; i++) {
+            partition.loglh(model);
+        }
+        auto t2 = std::chrono::high_resolution_clock::now();
+        return (t2 - t1)/_trials;
+    }
+    benchmark_time_t test_case_t::benchmark_pmatrix(partition_t& partition, const model_t& model){
+        auto t1 = std::chrono::high_resolution_clock::now();
+        for (size_t i = 0; i < _trials; i++) {
+            partition.update_probability_matrices(model.tree());
+        }
+        auto t2 = std::chrono::high_resolution_clock::now();
+        return (t2 - t1)/_trials;
+    }
+    benchmark_time_t test_case_t::benchmark_derivative(partition_t& partition, const model_t& model){
+        return benchmark_time_t(1.0);
     }
 
     unsigned int test_case_t::attributes() const{

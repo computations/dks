@@ -22,6 +22,9 @@ TEST_CASE("Benchmarks", "[test_case][benchmarks"){
     dks::model_t model(msa);
     auto br = t.benchmark(msa, model);
     CHECK(br[dks::test_kernel_t::partial].count() >= 0.0);
+    CHECK(br[dks::test_kernel_t::likelihood].count() >= 0.0);
+    CHECK(br[dks::test_kernel_t::pmatrix].count() >= 0.0);
+    CHECK(br[dks::test_kernel_t::derivative].count() >= 0.0);
 }
 
 TEST_CASE("Result type check",  "[test_case][benchmark_result]"){

@@ -57,7 +57,7 @@ namespace dks{
     }
 
     double partition_t::loglh(const model_t& model){
-        update_partials(model.make_operations());
+        //update_partials(model.make_operations());
         pll_unode_t* parent = model.tree().vroot();
         pll_unode_t* child = parent->back;
         return pll_compute_edge_loglikelihood(_partition,
@@ -71,7 +71,6 @@ namespace dks{
     }
 
     std::vector<double> partition_t::loglh_persite(const model_t& model, size_t sites){
-        update_partials(model.make_operations());
         pll_unode_t* parent = model.tree().vroot();
         pll_unode_t* child = parent->back;
 
@@ -83,7 +82,7 @@ namespace dks{
                                        child->clv_index,
                                        child->scaler_index,
                                        parent->pmatrix_index,
-                                      _params_indices,
+                                       _params_indices,
                                        persites.data());
         return persites;
     }

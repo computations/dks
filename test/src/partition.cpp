@@ -29,6 +29,7 @@ TEST_CASE("basic operations on partition_t", "[partition]"){
 
     SECTION("per site loglh"){
         dks::partition_t partition(msa, model, test_case.attributes());
+        partition.update_partials(model);
         auto loglh_persite = partition.loglh_persite(model, msa.length());
         for(auto&& loglh : loglh_persite){
             CHECK(loglh <= Approx(0.0));
@@ -38,6 +39,7 @@ TEST_CASE("basic operations on partition_t", "[partition]"){
 
     SECTION("loglh"){
         dks::partition_t partition(msa, model, test_case.attributes());
+        partition.update_partials(model);
         double loglh = partition.loglh(model);
         CHECK(loglh <= Approx(0.0));
         CHECK(std::isfinite(loglh));
