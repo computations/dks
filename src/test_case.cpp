@@ -59,6 +59,7 @@ namespace dks {
         auto t1 = std::chrono::high_resolution_clock::now();
         for (size_t i = 0; i < _trials; i++) {
             partition.update_sumtable(model.tree());
+            partition.compute_derivative(model.tree());
         }
         auto t2 = std::chrono::high_resolution_clock::now();
         return (t2 - t1)/_trials;
