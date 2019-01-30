@@ -24,6 +24,28 @@ namespace dks {
         initialize_tips(msa);
         initialize_rates(model);
         update_probability_matrices(model.tree());
+        alloc_sumtable(attributes);
+    }
+
+    void partition_t::alloc_sumtable(unsigned int attribs) {
+        unsigned int align = PLL_ALIGNMENT_CPU;
+        switch(attribs & PLL_ATTRIB_ARCH_MASK) {
+            case PLL_ATTRIB_ARCH_SSE:
+                align = PLL_ALIGNMENT_SSE;
+                break;
+            case PLL_ATTRIB_ARCH_AVX:
+            case PLL_ATTRIB_ARCH_AVX2:
+            case PLL_ATTRIB_ARCH_AVX512:
+                align = PLL_ALIGNMENT_AVX;
+                break;
+            default:
+                break;
+        }
+        _sumtable = (double*)pll_aligned_alloc(_partition->sites *
+                                               _partition->rate_cats *
+                                               _partition->states_padded *
+                                               sizeof(double),
+                                               align);
     }
 
     void partition_t::initialize_tips(const msa_t& msa) {
@@ -92,7 +114,40 @@ namespace dks {
         return persites;
     }
 
+    void partition_t::update_sumtable(const tree_t& tree) {
+        pll_unode_t* parent = tree.vroot();
+        pll_unode_t* child = parent->back;
+
+        pll_update_sumtable(_partition,
+                            parent->clv_index,
+                            child->clv_index,
+                            parent->scaler_index,
+                            child->scaler_index,
+                            _params_indices,
+                            _sumtable);
+    }
+
+    derivative_t partition_t::compute_derivative(
+            const tree_t& tree,
+            double brlen) {
+        pll_unode_t* parent = tree.vroot();
+        pll_unode_t* child = parent->back;
+
+        derivative_t d;
+        pll_compute_likelihood_derivatives(_partition,
+                                           parent->scaler_index,
+                                           child->scaler_index,
+                                           brlen,
+                                           _params_indices,
+                                           _sumtable,
+                                           &d.first,
+                                           &d.second);
+
+        return d;
+    }
+
     partition_t::~partition_t() {
         pll_partition_destroy(_partition);
+        pll_aligned_free(_sumtable);
     }
 }

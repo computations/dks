@@ -56,7 +56,12 @@ namespace dks {
     benchmark_time_t test_case_t::benchmark_derivative(
             partition_t& partition,
             const model_t& model) {
-        return benchmark_time_t(1.0);
+        auto t1 = std::chrono::high_resolution_clock::now();
+        for (size_t i = 0; i < _trials; i++) {
+            partition.update_sumtable(model.tree());
+        }
+        auto t2 = std::chrono::high_resolution_clock::now();
+        return (t2 - t1)/_trials;
     }
 
     unsigned int test_case_t::attributes() const {

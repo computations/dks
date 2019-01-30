@@ -44,4 +44,18 @@ TEST_CASE("basic operations on partition_t", "[partition]") {
         CHECK(loglh <= Approx(0.0));
         CHECK(std::isfinite(loglh));
     }
+
+    SECTION("update sumtable") {
+        dks::partition_t partition(msa, model, test_case.attributes());
+        partition.update_sumtable(model.tree());
+    }
+
+    SECTION("Derivatives") {
+        dks::partition_t partition(msa, model, test_case.attributes());
+        partition.update_partials(model);
+        partition.update_sumtable(model.tree());
+        auto dl = partition.compute_derivative(model.tree());
+        CHECK(std::isfinite(dl.first));
+        CHECK(std::isfinite(dl.second));
+    }
 }
