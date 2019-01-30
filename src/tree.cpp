@@ -40,6 +40,8 @@ namespace dks{
         }
         _tree = pll_utree_wraptree(vroot, tip_count);
         pll_utree_reset_template_indices(vroot, tip_count);
+        update_internal_lists();
+
         free(nodes);
     }
 
@@ -53,6 +55,10 @@ namespace dks{
 
     size_t tree_t::node_count() const{
         return _tree->tip_count + _tree->inner_count;
+    }
+
+    size_t tree_t::edge_count() const{
+        return _tree->tip_count * 2 - 3;
     }
 
     void tree_t::insert_tip(pll_unode_t* insert_node, const char* label){
@@ -99,6 +105,7 @@ namespace dks{
         a->label = nullptr;
         a->next = nullptr;
         a->back = nullptr;
+        a->length = 0.1;
         return a;
     }
 
@@ -108,6 +115,10 @@ namespace dks{
 
     const std::vector<double>& tree_t::branch_lengths() const{
         return _branch_lengths;
+    }
+
+    const std::vector<unsigned int>& tree_t::matrix_indices() const{
+        return _matrix_indices;
     }
 
     std::vector<pll_unode_t*> tree_t::full_traverse() const{
@@ -125,24 +136,30 @@ namespace dks{
         return trav_nodes;
     }
 
-    void tree_t::fill_branch_lengths(pll_unode_t** nodes){
-        if(nodes == nullptr){
-            nodes = (pll_unode_t**)malloc(node_count() * sizeof(pll_unode_t*));
+    void tree_t::fill_branch_lengths(const std::vector<pll_unode_t*>& nodes){
+        if (_branch_lengths.size() != nodes.size()){
+            _branch_lengths.resize(nodes.size(), 0.1);
+
         }
-
-        unsigned int node_count = 0;
-
-        pll_utree_traverse(
-                _tree->vroot,
-                PLL_TREE_TRAVERSE_POSTORDER,
-                full_traverse_cb,
-                nodes,
-                &node_count);
-
-        _branch_lengths.resize(node_count, 0.1);
-
-        for (size_t i = 0; i < node_count; i++) {
+        for (size_t i = 0; i < nodes.size(); i++) {
             _branch_lengths[i] = nodes[i]->length;
         }
     }
+
+    void tree_t::fill_matrix_indices(const std::vector<pll_unode_t*>& nodes){
+        if (_matrix_indices.size() != nodes.size()){
+            _matrix_indices.resize(nodes.size(), 0.1);
+
+        }
+        for (size_t i = 0; i < nodes.size(); i++) {
+            _matrix_indices[i] = nodes[i]->pmatrix_index;
+        }
+    }
+
+    void tree_t::update_internal_lists(){
+        auto nodes = full_traverse();
+        fill_branch_lengths(nodes);
+        fill_matrix_indices(nodes);
+    }
+
 }

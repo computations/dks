@@ -10,7 +10,7 @@ namespace dks{
             model_t(const msa_t& msa): model_t(msa, 0){};
             model_t(const msa_t& msa, uint64_t seed): 
                 _tree(msa, seed),
-                _subst_params(6, 0.0),
+                _subst_params(6, 1.0),
                 _frequencies(4, .25)
             {};
             unsigned int submodels() const;
