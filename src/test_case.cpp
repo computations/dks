@@ -2,14 +2,22 @@
 #include "partition.h"
 #include <random>
 #include <exception>
+#include <chrono>
 
 namespace dks{
     benchmark_result_t test_case_t::benchmark(
             const msa_t& msa,
             const model_t& model){
         partition_t partition(msa, model, attributes());
-        auto operations = model.make_operations();
-        partition.update_partials(operations);
+        benchmark_result_t br;
+
+        auto t1 = std::chrono::high_resolution_clock::now();
+        partition.update_partials(model);
+        auto t2 = std::chrono::high_resolution_clock::now();
+
+        br[test_kernel_t::partial] = t2 - t1;
+        
+        return br;
     }
 
     unsigned int test_case_t::attributes() const{

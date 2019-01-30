@@ -1,5 +1,6 @@
 #include <catch2/catch.hpp>
 #include <test_case.h>
+#include "data.h"
 
 TEST_CASE("test_case_t basic operations", "[test_case][constructor]"){
     dks::test_case_t t;
@@ -15,8 +16,16 @@ TEST_CASE("test_case_t basic operations", "[test_case][constructor]"){
     }
 }
 
+TEST_CASE("Benchmarks", "[test_case][benchmarks"){
+    dks::test_case_t t;
+    dks::msa_t msa(data[1]);
+    dks::model_t model(msa);
+    auto br = t.benchmark(msa, model);
+    CHECK(br[dks::test_kernel_t::partial].count() >= 0.0);
+}
+
 TEST_CASE("Result type check",  "[test_case][benchmark_result]"){
     dks::benchmark_result_t res;
-    res[dks::test_kernel_t::partial] = 1.0;
-    CHECK(res[dks::test_kernel_t::partial] == 1.0);
+    res[dks::test_kernel_t::partial] = std::chrono::duration<double>(1.0);
+    CHECK(res[dks::test_kernel_t::partial] == std::chrono::duration<double>(1.0));
 }

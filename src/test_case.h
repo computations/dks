@@ -3,6 +3,7 @@
 #include "tree.h"
 #include "model.h"
 #include <pll.h>
+#include <chrono>
 #include <memory>
 #include <unordered_map>
 
@@ -22,7 +23,10 @@ namespace dks{
         pmatrix,
     };
 
-    typedef std::unordered_map<test_kernel_t, double> benchmark_result_t;
+    typedef std::unordered_map<
+        test_kernel_t, 
+        std::chrono::duration<double>
+            > benchmark_result_t;
 
     class test_case_t{
         public:
