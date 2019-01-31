@@ -4,14 +4,6 @@
 #include <iostream>
 
 namespace dks {
-    size_t strlen(char* s) {
-        int i = 0;
-        while(true) {
-            if (!s[i]) {return i+1;}
-            i++;
-        }
-    }
-
 
     msa_t::msa_t(const pll_msa_t* msa) {
         init(msa);
@@ -27,6 +19,7 @@ namespace dks {
                 init(pll_msa);
                 pll_msa_destroy(pll_msa);
                 pll_phylip_close(fd);
+                _states = 4;
                 return;
             }else {
                 pll_phylip_close(fd);
@@ -46,30 +39,21 @@ namespace dks {
                     expected_sequence_length = sequence_len;
                 }
                 else if (expected_sequence_length != sequence_len) {
-                    //for(auto l : _labels) {
-                        //free(l);
-                    //}
                     throw std::runtime_error("Sequences don't match in size");
                 }
                 _sequences.emplace_back(sequence, sequence + sequence_len);
                 free(sequence);
-                _labels.push_back(header);
+                _labels.emplace_back(header);
+                free(header);
             }
             pll_fasta_close(fd);
         }
-    }
-
-    msa_t::~msa_t() {
-        for (auto c : _labels) {
-            free(c);
-        }
+        _states = 4;
     }
 
     void msa_t::init(const pll_msa_t* msa) {
         for (int i = 0; i < msa->count; i++) {
-            size_t label_size = strlen(msa->label[i]);
-            _labels.emplace_back((char*) malloc(sizeof(char) * label_size));
-            memcpy(_labels[i], msa->label[i], label_size);
+            _labels.emplace_back(msa->label[i]);
             _sequences.emplace_back(msa->sequence[i],
                                     msa->sequence[i] + msa->length);
         }
@@ -85,11 +69,11 @@ namespace dks {
     }
 
     size_t msa_t::states() const{
-        return 4;
+        return _states;
     }
 
     const char* msa_t::label(size_t i) const{
-        return _labels[i];
+        return _labels[i].data();
     }
 
     const char* msa_t::sequence(size_t i) const{
@@ -98,5 +82,42 @@ namespace dks {
 
     const pll_state_t* msa_t::char_map() const{
         return pll_map_nt;
+    }
+
+    msa_compressed_t::msa_compressed_t(const msa_t& msa) {
+        char** tmp_sequences = (char**) malloc(msa.count() * sizeof(char*));
+        for (size_t i = 0; i < msa.count(); i++) {
+            tmp_sequences[i] = (char*)malloc(msa.length() * sizeof(char));
+            for (size_t j = 0; j < msa.length(); j++) {
+                tmp_sequences[i][j] = msa.sequence(i)[j];
+            }
+        }
+
+        int tmp_length = msa.length();
+        unsigned int* tmp_weights = pll_compress_site_patterns(tmp_sequences,
+                                                      msa.char_map(),
+                                                      msa.count(),
+                                                      &tmp_length);
+
+        _weights = std::vector<unsigned int>(tmp_weights,
+                                             tmp_weights+tmp_length);
+
+        for (size_t i = 0; i < msa.count(); i++) {
+            _sequences.emplace_back(sequence_t(
+                        tmp_sequences[i],
+                        tmp_sequences[i] + tmp_length));
+
+            size_t label_len = strlen(msa.label(i));
+            _labels.push_back((char*)malloc(label_len * sizeof(char)));
+            for (size_t j = 0; j < label_len; j++) {
+                _labels[i][j] = msa.label(i)[j];
+            }
+        }
+
+        _states = msa.states();
+    }
+
+    unsigned int* msa_compressed_t::weights() {
+        return _weights.data();
     }
 }

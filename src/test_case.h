@@ -40,6 +40,7 @@ namespace dks{
                 _pattern_tip(0),
                 _site_repeats(0),
                 _rate_scalers(0) {}
+
             test_case_t(
                     test_cpu_t cpu,
                     bool pt,
@@ -47,10 +48,15 @@ namespace dks{
                     bool rs,
                     uint64_t seed):
                 _cpu(cpu),
+                _trials(30),
                 _random_seed(seed),
                 _pattern_tip(pt),
                 _site_repeats(sr),
                 _rate_scalers(rs) {}
+
+            test_case_t(
+                    test_cpu_t cpu):
+                test_case_t(cpu, 0, 0, 0, 0){}
 
             benchmark_result_t benchmark(const msa_t&, const model_t&);
             benchmark_time_t benchmark_partials(

@@ -2,19 +2,25 @@
 #include <pll.h>
 
 namespace dks {
+
     constexpr unsigned int partition_t::_params_indices[];
     constexpr double partition_t::_rate_cats[];
+
     partition_t::partition_t(
             const msa_t& msa,
             const model_t& model,
             unsigned int attributes) {
+
         unsigned int tip_count = msa.count();
         unsigned int inner_count = tip_count - 2;
+        unsigned int length = msa.length();
+        unsigned int states = msa.states();
+
         _partition = pll_partition_create(
                     tip_count,                  //tips
                     inner_count,                //clv_buffers
-                    msa.states(),               //states
-                    msa.length(),               //sites
+                    states,                     //states
+                    length,                     //sites
                     model.submodels(),          //rate_matrices
                     2 * tip_count - 3,          //prob_matrices
                     model.rate_categories(),    //rate_cats
@@ -49,11 +55,15 @@ namespace dks {
     }
 
     void partition_t::initialize_tips(const msa_t& msa) {
-        for (size_t tip_id = 0; tip_id < msa.count(); tip_id++) {
-            pll_set_tip_states(_partition, 
-                                tip_id,
-                                msa.char_map(),
-                                msa.sequence(tip_id));
+        if (_partition->attributes & PLL_ATTRIB_PATTERN_TIP) {
+        }
+        else {
+            for (size_t tip_id = 0; tip_id < msa.count(); tip_id++) {
+                pll_set_tip_states(_partition, 
+                                    tip_id,
+                                    msa.char_map(),
+                                    msa.sequence(tip_id));
+            }
         }
     }
 

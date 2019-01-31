@@ -13,6 +13,7 @@ TEST_CASE("fasta file constructor", "[msa][constructor][fasta]") {
 
     CHECK(msa.count() == 767);
     CHECK(msa.length() == 5814);
+    CHECK(msa.states() == 4);
 }
 
 TEST_CASE("phylip file constructor", "[msa][constructor][phylip]") {
@@ -20,4 +21,19 @@ TEST_CASE("phylip file constructor", "[msa][constructor][phylip]") {
 
     CHECK(msa.count() == 101);
     CHECK(msa.length() == 1858);
+    CHECK(msa.states() == 4);
+}
+
+TEST_CASE("pll_msa_t constructor", "[msa][pll]") {
+    pll_phylip_t* fd = pll_phylip_open(data[1], pll_map_phylip);
+    pll_msa_t* pll_msa = pll_phylip_parse_interleaved(fd);
+
+    dks::msa_t msa(pll_msa);
+
+    CHECK(msa.count() == 101);
+    CHECK(msa.length() == 1858);
+    CHECK(msa.states() == 4);
+
+    pll_msa_destroy(pll_msa);
+    pll_phylip_close(fd);
 }
