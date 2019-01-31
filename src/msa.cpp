@@ -107,14 +107,16 @@ namespace dks {
                         tmp_sequences[i],
                         tmp_sequences[i] + tmp_length));
 
-            size_t label_len = strlen(msa.label(i));
-            _labels.push_back((char*)malloc(label_len * sizeof(char)));
-            for (size_t j = 0; j < label_len; j++) {
-                _labels[i][j] = msa.label(i)[j];
-            }
+            _labels.emplace_back(msa.label(i));
         }
 
         _states = msa.states();
+
+        free(tmp_weights);
+        for (size_t i = 0; i < msa.count(); i++) {
+            free(tmp_sequences[i]);
+        }
+        free(tmp_sequences);
     }
 
     unsigned int* msa_compressed_t::weights() {

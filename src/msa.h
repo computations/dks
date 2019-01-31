@@ -20,21 +20,18 @@ namespace dks {
         const char* label(size_t i) const;
         const char* sequence(size_t i) const;
         const pll_state_t* char_map() const;
-    private:
+    protected:
         std::vector<sequence_t> _sequences;
         std::vector<label_t> _labels;
         unsigned int _states;
     };
 
 
-    class msa_compressed_t : msa_t {
+    class msa_compressed_t : public msa_t {
         public:
             msa_compressed_t(const msa_t&);
             unsigned int* weights();
         private:
-            std::vector<sequence_t> _sequences;
-            std::vector<label_t> _labels;
-            unsigned int _states;
             std::vector<unsigned int> _weights;
     };
 }

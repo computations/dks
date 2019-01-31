@@ -37,3 +37,12 @@ TEST_CASE("pll_msa_t constructor", "[msa][pll]") {
     pll_msa_destroy(pll_msa);
     pll_phylip_close(fd);
 }
+
+TEST_CASE("compressed msa") {
+    dks::msa_t msa(data[1]);
+    dks::msa_compressed_t cmsa(msa);
+
+    CHECK(cmsa.count() == 101);
+    CHECK(msa.length() == 1858);
+    CHECK(msa.states() == 4);
+}
