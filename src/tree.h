@@ -14,6 +14,7 @@ namespace dks {
             const std::vector<double>& branch_lengths() const;
             const std::vector<unsigned int>& matrix_indices() const;
             std::vector<pll_unode_t*> full_traverse() const;
+            std::vector<pll_operation_t> make_operations() const;
             ~tree_t();
         private:
             static void insert_tip(pll_unode_t*, const char*);

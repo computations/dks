@@ -82,21 +82,21 @@ TEST_CASE("basic operations on partition_t", "[partition]") {
 
     std::vector<std::pair<std::string, bool>> site_repeats = {
         std::make_pair("site repeats off", false),
-        //std::make_pair("site repeats on", true),
+        std::make_pair("site repeats on", true),
     };
 
     std::vector<std::pair<std::string, bool>> rate_scalers = {
         std::make_pair("rate scalers off", false),
-        //std::make_pair("rate scalers on", true),
+        std::make_pair("rate scalers on", true),
     };
 
     dks::msa_t msa(data[1]);
     dks::model_t model(msa);
 
-    for (auto&& cpu : cpus){
-        for (auto&& pt : pattern_tips){
-            for (auto&& sr : site_repeats){
-                for (auto&& rs : rate_scalers){
+    for (auto&& cpu : cpus) {
+        for (auto&& pt : pattern_tips) {
+            for (auto&& sr : site_repeats) {
+                for (auto&& rs : rate_scalers) {
                     SECTION(cpu.first + ", " +
                             pt.first + ", " +
                             sr.first + ", " +

@@ -86,12 +86,16 @@ namespace dks {
         pll_set_pattern_weights(_partition, msa.weights());
     }
 
-    void partition_t::update_partials(const model_t& model) {
-        update_partials(model.make_operations());
+    void partition_t::update_partials(const tree_t& tree) {
+        update_partials(tree.make_operations());
     }
 
-    double partition_t::loglh(const model_t& model) {
-        pll_unode_t* parent = model.tree().vroot();
+    void partition_t::update_partials(const model_t& model) {
+        update_partials(model.tree());
+    }
+
+    double partition_t::loglh(const tree_t& tree) {
+        pll_unode_t* parent = tree.vroot();
         pll_unode_t* child = parent->back;
         return pll_compute_edge_loglikelihood(_partition,
                                               parent->clv_index,
@@ -101,6 +105,10 @@ namespace dks {
                                               parent->pmatrix_index,
                                               _params_indices,
                                               nullptr);
+    }
+
+    double partition_t::loglh(const model_t& model) {
+        return loglh(model.tree());
     }
 
     std::vector<double> partition_t::loglh_persite(
@@ -129,6 +137,9 @@ namespace dks {
     void partition_t::update_sumtable(const tree_t& tree) {
         pll_unode_t* parent = tree.vroot();
         pll_unode_t* child = parent->back;
+        if (site_repeats()) {
+            update_partials(tree);
+        }
 
         pll_update_sumtable(_partition,
                             parent->clv_index,
@@ -158,6 +169,9 @@ namespace dks {
         return d;
     }
 
+    bool partition_t::site_repeats() const {
+        return attributes() & PLL_ATTRIB_SITE_REPEATS;
+    }
 
     partition_t::~partition_t() {
         pll_partition_destroy(_partition);

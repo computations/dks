@@ -39,6 +39,7 @@ namespace dks {
             void update_probability_matrices(const tree_t& tree);
 
             void update_partials(const std::vector<pll_operation_t>&);
+            void update_partials(const tree_t& tree);
             void update_partials(const model_t& model);
 
             void update_sumtable(const tree_t& tree);
@@ -46,11 +47,13 @@ namespace dks {
                     const tree_t& tree,
                     double brlen = 1.0);
 
+            double loglh(const tree_t& tree);
             double loglh(const model_t& model);
             std::vector<double> loglh_persite(
                     const model_t& model,
                     size_t sites);
 
+            bool site_repeats() const;
             unsigned int attributes() const;
         private:
             void alloc_sumtable(unsigned int attribs);

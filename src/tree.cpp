@@ -43,6 +43,10 @@ namespace dks {
         update_internal_lists();
 
         free(nodes);
+        if(!pll_utree_check_integrity(_tree)) {
+            pll_utree_destroy(_tree, nullptr);
+            throw std::runtime_error("Tree validation check failed");
+        }
     }
 
     tree_t::~tree_t() {
@@ -127,12 +131,14 @@ namespace dks {
     std::vector<pll_unode_t*> tree_t::full_traverse() const{
         unsigned int node_number = 0;
         std::vector<pll_unode_t*> trav_nodes(node_count());
-        pll_utree_traverse(
+        if(!(pll_utree_traverse(
                 _tree->vroot,
                 PLL_TREE_TRAVERSE_POSTORDER,
                 full_traverse_cb,
                 trav_nodes.data(),
-                &node_number);
+                &node_number))) {
+            throw std::runtime_error("Generic failure to traverse the tree");
+        }
 
         return trav_nodes;
     }
@@ -163,4 +169,19 @@ namespace dks {
         fill_matrix_indices(nodes);
     }
 
+    std::vector<pll_operation_t> tree_t::make_operations() const {
+        auto traversal_nodes = full_traverse();
+        std::vector<pll_operation_t> operations(traversal_nodes.size());
+        unsigned int operations_count = 0;
+        pll_utree_create_operations(traversal_nodes.data(),
+                                    traversal_nodes.size(),
+                                    nullptr,
+                                    nullptr,
+                                    operations.data(),
+                                    nullptr,
+                                    &operations_count);
+
+        operations.resize(operations_count);
+        return operations;
+    }
 }
