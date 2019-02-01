@@ -10,6 +10,11 @@ void test_partition_operations(
         const dks::model_t& model,
         const dks::msa_t& msa) {
 
+    SECTION("check attributes") {
+        dks::partition_t partition(msa, model, test_case.attributes());
+        REQUIRE(partition.attributes() == test_case.attributes());
+    }
+
     SECTION("update partials, operations specified") {
         dks::partition_t partition(msa, model, test_case.attributes());
         partition.update_partials(model.make_operations());
@@ -72,7 +77,7 @@ TEST_CASE("basic operations on partition_t", "[partition]") {
 
     std::vector<std::pair<std::string, bool>> pattern_tips = {
         std::make_pair("pattern tips off", false),
-        //std::make_pair("pattern tips on", true),
+        std::make_pair("pattern tips on", true),
     };
 
     std::vector<std::pair<std::string, bool>> site_repeats = {

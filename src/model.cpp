@@ -42,6 +42,7 @@ namespace dks {
                                     nullptr,
                                     &operations_count);
 
+        operations.resize(operations_count);
         return operations;
     }
 }

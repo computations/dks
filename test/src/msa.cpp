@@ -43,6 +43,6 @@ TEST_CASE("compressed msa") {
     dks::msa_compressed_t cmsa(msa);
 
     CHECK(cmsa.count() == 101);
-    CHECK(msa.length() == 1858);
-    CHECK(msa.states() == 4);
+    CHECK(cmsa.length() == 1630);
+    CHECK(cmsa.states() == 4);
 }

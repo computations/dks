@@ -13,14 +13,12 @@ namespace dks {
 
         unsigned int tip_count = msa.count();
         unsigned int inner_count = tip_count - 2;
-        unsigned int length = msa.length();
-        unsigned int states = msa.states();
 
         _partition = pll_partition_create(
                     tip_count,                  //tips
                     inner_count,                //clv_buffers
-                    states,                     //states
-                    length,                     //sites
+                    msa.states(),               //states
+                    msa.length(),               //sites
                     model.submodels(),          //rate_matrices
                     2 * tip_count - 3,          //prob_matrices
                     model.rate_categories(),    //rate_cats
@@ -55,15 +53,11 @@ namespace dks {
     }
 
     void partition_t::initialize_tips(const msa_t& msa) {
-        if (_partition->attributes & PLL_ATTRIB_PATTERN_TIP) {
-        }
-        else {
-            for (size_t tip_id = 0; tip_id < msa.count(); tip_id++) {
-                pll_set_tip_states(_partition, 
-                                    tip_id,
-                                    msa.char_map(),
-                                    msa.sequence(tip_id));
-            }
+        for (size_t tip_id = 0; tip_id < msa.count(); tip_id++) {
+            pll_set_tip_states(_partition,
+                                tip_id,
+                                msa.char_map(),
+                                msa.sequence(tip_id));
         }
     }
 
@@ -86,6 +80,10 @@ namespace dks {
     void partition_t::update_partials(
             const std::vector<pll_operation_t>& ops) {
         pll_update_partials(_partition, ops.data(), ops.size());
+    }
+
+    void partition_t::set_pattern_weights(const msa_compressed_t& msa) {
+        pll_set_pattern_weights(_partition, msa.weights());
     }
 
     void partition_t::update_partials(const model_t& model) {
@@ -124,6 +122,10 @@ namespace dks {
         return persites;
     }
 
+    unsigned int partition_t::attributes() const {
+        return _partition->attributes;
+    }
+
     void partition_t::update_sumtable(const tree_t& tree) {
         pll_unode_t* parent = tree.vroot();
         pll_unode_t* child = parent->back;
@@ -155,6 +157,7 @@ namespace dks {
 
         return d;
     }
+
 
     partition_t::~partition_t() {
         pll_partition_destroy(_partition);

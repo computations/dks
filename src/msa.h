@@ -30,7 +30,7 @@ namespace dks {
     class msa_compressed_t : public msa_t {
         public:
             msa_compressed_t(const msa_t&);
-            unsigned int* weights();
+            const unsigned int* weights() const;
         private:
             std::vector<unsigned int> _weights;
     };

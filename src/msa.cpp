@@ -119,7 +119,7 @@ namespace dks {
         free(tmp_sequences);
     }
 
-    unsigned int* msa_compressed_t::weights() {
+    const unsigned int* msa_compressed_t::weights() const {
         return _weights.data();
     }
 }

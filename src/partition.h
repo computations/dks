@@ -35,6 +35,7 @@ namespace dks {
 
             void initialize_tips(const msa_t&);
             void initialize_rates(const model_t& model);
+            void set_pattern_weights(const msa_compressed_t&);
             void update_probability_matrices(const tree_t& tree);
 
             void update_partials(const std::vector<pll_operation_t>&);
@@ -49,6 +50,8 @@ namespace dks {
             std::vector<double> loglh_persite(
                     const model_t& model,
                     size_t sites);
+
+            unsigned int attributes() const;
         private:
             void alloc_sumtable(unsigned int attribs);
 
