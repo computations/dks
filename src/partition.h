@@ -19,7 +19,7 @@ namespace dks {
                     unsigned int rate_cats,
                     unsigned int scale_buffers,
                     unsigned int attributes
-                    ): _partition(pll_partition_create(
+                    ): _partition{pll_partition_create(
                             tips,
                             clv_buffers,
                             states,
@@ -29,7 +29,7 @@ namespace dks {
                             rate_cats,
                             scale_buffers,
                             attributes
-                            )){}
+                            )} {};
             partition_t(const msa_t&, const model_t&, unsigned int);
             ~partition_t();
 
