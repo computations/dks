@@ -4,11 +4,12 @@
 
 namespace dks {
     int full_traverse_cb(pll_unode_t* n) {
+        //silence a warning
+        do { (void)(n); } while(0);
         return PLL_SUCCESS;
     }
 
     tree_t::tree_t(size_t tip_count, uint64_t random_seed) {
-        size_t edge_count = 2 * tip_count - 3;
         size_t inner_count = tip_count - 2;
 
         pll_unode_t* vroot = make_triplet(
