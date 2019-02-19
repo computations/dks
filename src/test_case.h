@@ -37,9 +37,9 @@ namespace dks{
                 _cpu(test_cpu_t::none),
                 _trials(30),
                 _random_seed(0),
-                _pattern_tip(0),
-                _site_repeats(0),
-                _rate_scalers(0) {}
+                _pattern_tip(false),
+                _site_repeats(false),
+                _rate_scalers(false) {}
 
             test_case_t(
                     test_cpu_t cpu,

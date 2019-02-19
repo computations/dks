@@ -13,3 +13,4 @@ set_target_properties(raxml-dks PROPERTIES
 set(${CMAKE_BUILD_TYPE} DEBUG)
 target_include_directories(raxml-dks PRIVATE ${CMAKE_SOURCE_DIR}/lib/libpll/src/)
 target_link_libraries(raxml-dks pll_static)
+target_compile_options(raxml-dks PRIVATE -Wall -Wextra -pedantic)
