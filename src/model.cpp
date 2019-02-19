@@ -45,4 +45,8 @@ namespace dks {
         operations.resize(operations_count);
         return operations;
     }
+
+    void model_t::reset_tree() {
+        _tree = tree_t(_tree.tip_count());
+    }
 }

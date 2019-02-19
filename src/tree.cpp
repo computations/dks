@@ -7,15 +7,14 @@ namespace dks {
         return PLL_SUCCESS;
     }
 
-    tree_t::tree_t(const msa_t& msa, uint64_t random_seed) {
-        size_t tip_count = msa.count();
+    tree_t::tree_t(size_t tip_count, uint64_t random_seed) {
         size_t edge_count = 2 * tip_count - 3;
         size_t inner_count = tip_count - 2;
 
         pll_unode_t* vroot = make_triplet(
-                make_tip(msa.label(0)),
-                make_tip(msa.label(1)),
-                make_tip(msa.label(2))
+                make_tip(),
+                make_tip(),
+                make_tip()
             );
 
         //generate a list of nodes
@@ -36,7 +35,7 @@ namespace dks {
 
             std::uniform_int_distribution<> roller(0, node_count-1);
             pll_unode_t* insert_node = nodes[roller(random_engine)];
-            insert_tip(insert_node, msa.label(i));
+            insert_tip(insert_node);
         }
         _tree = pll_utree_wraptree(vroot, tip_count);
         pll_utree_reset_template_indices(vroot, tip_count);
@@ -65,11 +64,15 @@ namespace dks {
         return _tree->tip_count * 2 - 3;
     }
 
-    void tree_t::insert_tip(pll_unode_t* insert_node, const char* label) {
+    size_t tree_t::tip_count() const {
+        return _tree->tip_count;
+    }
+
+    void tree_t::insert_tip(pll_unode_t* insert_node) {
         pll_unode_t* new_a = make_node();
         pll_unode_t* new_b = make_node();
         pll_unode_t* new_c = make_node();
-        pll_unode_t* new_tip = make_tip(label);
+        pll_unode_t* new_tip = make_tip();
 
         pll_unode_t* saved_back = insert_node->back;
 
@@ -116,7 +119,7 @@ namespace dks {
         return a;
     }
 
-    pll_unode_t* tree_t::make_tip(const char* label) {
+    pll_unode_t* tree_t::make_tip() {
         return make_node();
     }
 

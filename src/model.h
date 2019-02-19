@@ -21,6 +21,8 @@ namespace dks {
             const std::vector<double>& frequencies() const;
             const tree_t& tree() const;
 
+            void reset_tree();
+
             std::vector<pll_operation_t> make_operations() const;
         private:
             tree_t _tree;

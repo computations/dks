@@ -27,7 +27,7 @@ namespace dks{
     typedef std::chrono::duration<double> benchmark_time_t;
 
     typedef std::unordered_map<
-        test_kernel_t, 
+        test_kernel_t,
         benchmark_time_t
             > benchmark_result_t;
 
