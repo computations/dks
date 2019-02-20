@@ -4,10 +4,8 @@
 #include <iostream>
 
 namespace dks {
-
     msa_t::msa_t(const pll_msa_t* msa) {
         init(msa);
-        _states = 4;
     }
 
     msa_t::msa_t(const std::string& filename) {
@@ -19,7 +17,6 @@ namespace dks {
                 init(pll_msa);
                 pll_msa_destroy(pll_msa);
                 pll_phylip_close(fd);
-                _states = 4;
                 return;
             }else {
                 pll_phylip_close(fd);
@@ -48,7 +45,6 @@ namespace dks {
             }
             pll_fasta_close(fd);
         }
-        _states = 4;
     }
 
     void msa_t::init(const pll_msa_t* msa) {
@@ -66,10 +62,6 @@ namespace dks {
     size_t msa_t::length() const{
         if (_sequences.empty()) {return 0;}
         return _sequences.front().size();
-    }
-
-    size_t msa_t::states() const{
-        return _states;
     }
 
     const char* msa_t::label(size_t i) const{
@@ -110,9 +102,8 @@ namespace dks {
             _labels.emplace_back(msa.label(i));
         }
 
-        _states = msa.states();
-
         free(tmp_weights);
+
         for (size_t i = 0; i < msa.count(); i++) {
             free(tmp_sequences[i]);
         }

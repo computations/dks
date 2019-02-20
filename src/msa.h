@@ -16,14 +16,12 @@ namespace dks {
         void init(const pll_msa_t* msa);
         size_t count() const;
         size_t length() const;
-        size_t states() const;
         const char* label(size_t i) const;
         const char* sequence(size_t i) const;
         const pll_state_t* char_map() const;
     protected:
         std::vector<sequence_t> _sequences;
         std::vector<label_t> _labels;
-        unsigned int _states;
     };
 
 

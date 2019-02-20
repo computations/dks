@@ -12,6 +12,10 @@ namespace dks {
         return 1;
     }
 
+    uint64_t model_t::states() const {
+        return _states;
+    }
+
     const double * model_t::subst_params_raw() const {
         return _subst_params.data();
     }

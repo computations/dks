@@ -11,7 +11,7 @@ namespace dks {
             model_t(size_t tip_count): model_t{tip_count, 0}{};
             model_t(const msa_t& msa, uint64_t seed): 
                 _tree {msa.count(), seed},
-                _states {msa.states()},
+                _states {4},
                 _subst_params ((_states-1)*(_states-2), 1.0),
                 _frequencies (_states, 1.0/_states)
             {};
@@ -35,6 +35,7 @@ namespace dks {
 
             unsigned int submodels() const;
             unsigned int rate_categories() const;
+            uint64_t states() const;
             const double * subst_params_raw() const;
             const std::vector<double>& subst_params() const;
             const double * frequencies_raw() const;

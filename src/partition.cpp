@@ -17,7 +17,7 @@ namespace dks {
         _partition = pll_partition_create(
                     tip_count,                  //tips
                     inner_count,                //clv_buffers
-                    msa.states(),               //states
+                    model.states(),               //states
                     msa.length(),               //sites
                     model.submodels(),          //rate_matrices
                     2 * tip_count - 3,          //prob_matrices

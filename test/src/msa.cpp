@@ -13,7 +13,6 @@ TEST_CASE("fasta file constructor", "[msa][constructor][fasta]") {
 
     CHECK(msa.count() == 767);
     CHECK(msa.length() == 5814);
-    CHECK(msa.states() == 4);
 }
 
 TEST_CASE("phylip file constructor", "[msa][constructor][phylip]") {
@@ -21,7 +20,6 @@ TEST_CASE("phylip file constructor", "[msa][constructor][phylip]") {
 
     CHECK(msa.count() == 101);
     CHECK(msa.length() == 1858);
-    CHECK(msa.states() == 4);
 }
 
 TEST_CASE("pll_msa_t constructor", "[msa][pll]") {
@@ -32,10 +30,15 @@ TEST_CASE("pll_msa_t constructor", "[msa][pll]") {
 
     CHECK(msa.count() == 101);
     CHECK(msa.length() == 1858);
-    CHECK(msa.states() == 4);
 
     pll_msa_destroy(pll_msa);
     pll_phylip_close(fd);
+}
+
+TEST_CASE("protein data", "[msa][protein][phylip]") {
+    dks::msa_t msa(data[2]);
+    CHECK(msa.count() == 775);
+    CHECK(msa.length() == 4519);
 }
 
 TEST_CASE("compressed msa") {
@@ -44,5 +47,4 @@ TEST_CASE("compressed msa") {
 
     CHECK(cmsa.count() == 101);
     CHECK(cmsa.length() == 1630);
-    CHECK(cmsa.states() == 4);
 }
