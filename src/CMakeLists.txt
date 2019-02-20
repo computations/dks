@@ -5,6 +5,7 @@ add_executable(raxml-dks
     tree.cpp
     partition.cpp
     model.cpp
+    benchmark.cpp
 )
 set_target_properties(raxml-dks PROPERTIES
     CXX_STANDARD 11

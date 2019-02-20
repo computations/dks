@@ -39,7 +39,8 @@ namespace dks {
                 _tree {tree_t(tip_count)},
                 _states {states},
                 _subst_params {subst_params[model_index],
-                        subst_params[model_index] + (_states - 1) * (_states - 2)},
+                        subst_params[model_index]
+                            + (_states - 1) * (_states - 2)},
                 _frequencies {frequencies[model_index],
                         frequencies[model_index] + _states}
             {};

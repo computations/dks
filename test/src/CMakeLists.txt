@@ -11,6 +11,8 @@ add_executable(dks_test
     ${CMAKE_SOURCE_DIR}/src/tree.cpp
     partition.cpp
     ${CMAKE_SOURCE_DIR}/src/partition.cpp
+    benchmark.cpp
+    ${CMAKE_SOURCE_DIR}/src/benchmark.cpp
 )
 target_include_directories(dks_test PRIVATE ${CMAKE_SOURCE_DIR}/lib/libpll/src/)
 target_include_directories(dks_test PRIVATE ${CMAKE_SOURCE_DIR}/src)
