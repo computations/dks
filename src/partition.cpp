@@ -17,7 +17,7 @@ namespace dks {
         _partition = pll_partition_create(
                     tip_count,                  //tips
                     inner_count,                //clv_buffers
-                    model.states(),               //states
+                    model.states(),             //states
                     msa.length(),               //sites
                     model.submodels(),          //rate_matrices
                     2 * tip_count - 3,          //prob_matrices
@@ -177,4 +177,9 @@ namespace dks {
         pll_partition_destroy(_partition);
         pll_aligned_free(_sumtable);
     }
+
+    const pll_partition_t* partition_t::partition_raw() const {
+        return _partition;
+    }
+
 }

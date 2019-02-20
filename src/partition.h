@@ -55,6 +55,8 @@ namespace dks {
 
             bool site_repeats() const;
             unsigned int attributes() const;
+
+            const pll_partition_t* partition_raw() const;
         private:
             void alloc_sumtable(unsigned int attribs);
 
