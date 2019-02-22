@@ -21,15 +21,28 @@ namespace dks{
     attributes_t select_kernel(
             const pll_partition_t* pll_partition,
             const pll_msa_t* pll_msa,
-            kernel_weight_t kw) {
+            const kernel_weight_t& kw) {
 
         msa_t msa {pll_msa};
         model_t model {pll_partition};
+        return select_kernel(model, msa, kw);
+    }
+
+    attributes_t select_kernel(
+            const model_t& model,
+            const msa_t& msa,
+            const kernel_weight_t& kw) {
+
         attributes_time_t times;
         for (uint8_t bit_attribs = 0; bit_attribs < 0x10; ++bit_attribs) {
             for (uint8_t simd = test_cpu_t::none;
                     simd <= test_cpu_t::avx2;
                     ++simd) {
+                if (static_cast<bool>(bit_attribs & (1 << 1))
+                        && static_cast<bool>(bit_attribs & (1 << 2))) {
+                    continue;
+                }
+
                 attributes_t attribs(
                         static_cast<bool>(bit_attribs & (1 << 0)),
                         static_cast<bool>(bit_attribs & (1 << 1)),

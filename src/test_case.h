@@ -58,9 +58,9 @@ namespace dks{
 
     class test_case_t{
         public:
-            test_case_t() : 
+            test_case_t() :
                 _cpu {test_cpu_t::none},
-                _trials {30},
+                _trials {10},
                 _random_seed {0},
                 _pattern_tip {false},
                 _site_repeats {false},
@@ -73,7 +73,7 @@ namespace dks{
                     bool rs,
                     uint64_t seed):
                 _cpu{cpu},
-                _trials{30},
+                _trials{20},
                 _random_seed{seed},
                 _pattern_tip{pt},
                 _site_repeats{sr},
