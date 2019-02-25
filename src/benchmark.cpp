@@ -14,8 +14,6 @@ inline benchmark_time_t weight_kernel_times(kernel_weight_t kw,
          kw[test_kernel_t::pmatrix] * bmr[test_kernel_t::pmatrix];
 }
 
-typedef std::unordered_map<attributes_t, benchmark_time_t> attributes_time_t;
-
 attributes_t select_kernel(const pll_partition_t *pll_partition,
                            const pll_msa_t *pll_msa,
                            const kernel_weight_t &kw) {
@@ -24,8 +22,8 @@ attributes_t select_kernel(const pll_partition_t *pll_partition,
   return select_kernel(model, msa, kw);
 }
 
-attributes_t select_kernel(const model_t &model, const msa_t &msa,
-                           const kernel_weight_t &kw) {
+attributes_time_t select_kernel_verbose(const model_t &model, const msa_t &msa,
+                                        const kernel_weight_t &kw) {
   attributes_time_t times;
   for (uint8_t bit_attribs = 0; bit_attribs < 0x10; ++bit_attribs) {
     for (uint8_t simd = test_cpu_t::none; simd <= test_cpu_t::avx2; ++simd) {
@@ -43,7 +41,12 @@ attributes_t select_kernel(const model_t &model, const msa_t &msa,
       times[attribs] = weight_kernel_times(kw, tc.benchmark(msa, model));
     }
   }
+  return times;
+}
 
+attributes_t select_kernel(const model_t &model, const msa_t &msa,
+                           const kernel_weight_t &kw) {
+  auto times = select_kernel_verbose(model, msa, kw);
   return std::max_element(times.begin(), times.end(),
                           [](const attributes_time_t::value_type &a,
                              const attributes_time_t::value_type &b) {

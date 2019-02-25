@@ -4,6 +4,7 @@
 #include "partition.h"
 #include "tree.h"
 #include <chrono>
+#include <iostream>
 #include <memory>
 #include <pll.h>
 #include <unordered_map>
@@ -97,3 +98,7 @@ template <> struct hash<dks::attributes_t> {
   }
 };
 } // namespace std
+
+std::ostream &operator<<(std::ostream &stream, const dks::test_cpu_t &cpu);
+std::ostream &operator<<(std::ostream &stream,
+                         const dks::attributes_t &attribs);

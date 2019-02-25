@@ -41,6 +41,9 @@ msa_t::msa_t(const std::string &filename) {
     }
     pll_fasta_close(fd);
   }
+  if (!valid()){
+      throw std::runtime_error("failed to parse the msa file");
+  }
 }
 
 void msa_t::init(const pll_msa_t *msa) {
@@ -64,6 +67,10 @@ const char *msa_t::label(size_t i) const { return _labels[i].data(); }
 const char *msa_t::sequence(size_t i) const { return _sequences[i].data(); }
 
 const pll_state_t *msa_t::char_map() const { return pll_map_nt; }
+
+bool msa_t::valid() const {
+    return _sequences.size() > 0;
+}
 
 msa_compressed_t::msa_compressed_t(const msa_t &msa) {
   char **tmp_sequences = (char **)malloc(msa.count() * sizeof(char *));

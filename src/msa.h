@@ -19,6 +19,7 @@ public:
   const char *label(size_t i) const;
   const char *sequence(size_t i) const;
   const pll_state_t *char_map() const;
+  bool valid() const;
 
 protected:
   std::vector<sequence_t> _sequences;

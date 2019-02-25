@@ -2,6 +2,7 @@
 #include "test_case.h"
 #include <chrono>
 #include <exception>
+#include <iostream>
 #include <random>
 
 namespace dks {
@@ -91,3 +92,28 @@ unsigned int test_case_t::cpu_attributes() const {
 }
 
 } // namespace dks
+
+std::ostream &operator<<(std::ostream &stream, const dks::test_cpu_t &cpu) {
+  if (cpu == dks::test_cpu_t::none) {
+    stream << "none";
+  } else if (cpu == dks::test_cpu_t::sse) {
+    stream << "sse";
+  } else if (cpu == dks::test_cpu_t::avx) {
+    stream << "avx";
+  } else if (cpu == dks::test_cpu_t::avx2) {
+    stream << "avx2";
+  } else if (cpu == dks::test_cpu_t::avx512) {
+    stream << "avx512";
+  }
+  return stream;
+}
+
+std::ostream &operator<<(std::ostream &stream,
+                         const dks::attributes_t &attribs) {
+  stream << "(cpu: " << attribs.simd << std::boolalpha
+         << ", pattern tip: " << attribs.pattern_tip
+         << ", tip inner: " << attribs.tip_inner
+         << ", rate scalers: " << attribs.rate_scalers
+         << ", site repeats: " << attribs.site_repeats << ")";
+  return stream;
+}
