@@ -21,6 +21,8 @@ public:
   const pll_state_t *char_map() const;
   bool valid() const;
 
+  double column_entropy() const;
+
 protected:
   std::vector<sequence_t> _sequences;
   std::vector<label_t> _labels;

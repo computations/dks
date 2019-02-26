@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <unordered_map>
+#include <cmath>
 
 namespace dks {
 msa_t::msa_t(const pll_msa_t *msa) { init(msa); }
@@ -70,6 +72,28 @@ const pll_state_t *msa_t::char_map() const { return pll_map_nt; }
 
 bool msa_t::valid() const {
     return _sequences.size() > 0;
+}
+
+double msa_t::column_entropy() const{
+    uint64_t taxa_count = _sequences.size();
+    if(taxa_count == 0){
+        return 0.0;
+    }
+    size_t sequence_len = _sequences[0].size();
+    double entropy = 0.0;
+    for (size_t i = 0; i < sequence_len; ++i){
+        std::unordered_map<char, uint64_t> counts;
+        for (const auto& s : _sequences){
+            counts[s[i]] += 1;
+        }
+        double site_entropy;
+        for (const auto& kv : counts) {
+            double px = static_cast<double>(kv.second)/taxa_count;
+            site_entropy += std::log2(px) * px;
+        }
+        entropy -= site_entropy;
+    }
+    return entropy/sequence_len;
 }
 
 msa_compressed_t::msa_compressed_t(const msa_t &msa) {
