@@ -112,7 +112,6 @@ std::ostream &operator<<(std::ostream &stream,
                          const dks::attributes_t &attribs) {
   stream << "(cpu: " << attribs.simd << std::boolalpha
          << ", pattern tip: " << attribs.pattern_tip
-         << ", tip inner: " << attribs.tip_inner
          << ", rate scalers: " << attribs.rate_scalers
          << ", site repeats: " << attribs.site_repeats << ")";
   return stream;

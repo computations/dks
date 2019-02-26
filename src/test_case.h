@@ -31,19 +31,18 @@ typedef std::unordered_map<test_kernel_t, benchmark_time_t> benchmark_result_t;
 
 struct attributes_t {
   bool pattern_tip;
-  bool tip_inner;
   bool site_repeats;
   bool rate_scalers;
   test_cpu_t simd;
 
   attributes_t() = default;
 
-  attributes_t(bool pc, bool ti, bool sr, bool rs, test_cpu_t simd)
-      : pattern_tip{pc}, tip_inner{ti}, site_repeats{sr},
+  attributes_t(bool pc, bool sr, bool rs, test_cpu_t simd)
+      : pattern_tip{pc},  site_repeats{sr},
         rate_scalers{rs}, simd{simd} {};
 
   bool operator==(const attributes_t &other) const {
-    return pattern_tip == other.pattern_tip && tip_inner == other.tip_inner &&
+    return pattern_tip == other.pattern_tip &&
            site_repeats == other.site_repeats &&
            rate_scalers == other.rate_scalers && simd == other.simd;
   }
@@ -56,7 +55,7 @@ public:
         _pattern_tip{false}, _site_repeats{false}, _rate_scalers{false} {}
 
   test_case_t(test_cpu_t cpu, bool pt, bool sr, bool rs, uint64_t seed)
-      : _cpu{cpu}, _trials{20}, _random_seed{seed}, _pattern_tip{pt},
+      : _cpu{cpu}, _trials{30}, _random_seed{seed}, _pattern_tip{pt},
         _site_repeats{sr}, _rate_scalers{rs} {}
 
   test_case_t(test_cpu_t cpu) : test_case_t{cpu, 0, 0, 0, 0} {}
@@ -93,8 +92,8 @@ template <> struct hash<dks::attributes_t> {
   typedef dks::attributes_t argument_type;
   typedef size_t result_type;
   result_type operator()(const argument_type &s) const noexcept {
-    return (s.pattern_tip << 0) ^ (s.tip_inner << 1) ^ (s.site_repeats << 2) ^
-           (s.rate_scalers << 3) ^ (s.simd << 4);
+    return (s.pattern_tip << 0) ^ (s.site_repeats << 1) ^
+           (s.rate_scalers << 2) ^ (s.simd << 3);
   }
 };
 } // namespace std
