@@ -1,10 +1,10 @@
 #include "benchmark.h"
+#include <algorithm>
 #include <getopt.h>
 #include <iostream>
 #include <string>
-#include <vector>
 #include <utility>
-#include <algorithm>
+#include <vector>
 
 #include <unistd.h>
 
@@ -34,22 +34,23 @@ int main(int argc, char **argv) {
   dks::msa_t msa(filename);
   dks::model_t model(msa);
   dks::kernel_weight_t kw{
-    {dks::test_kernel_t::partial, 1.0/2.0},
-    {dks::test_kernel_t::likelihood, 1.0/4.0},
-    {dks::test_kernel_t::derivative, 1/8.0},
-    {dks::test_kernel_t::pmatrix, 1/8.0},
+      {dks::test_kernel_t::likelihood, 1.0 / 4.0},
+      {dks::test_kernel_t::partial, 1.0 / 4.0},
+      {dks::test_kernel_t::derivative, 1 / 8.0},
+      {dks::test_kernel_t::pmatrix, 1 / 8.0},
   };
 
   auto results = dks::select_kernel_verbose(model, msa, kw);
 
-  vector<pair<dks::attributes_t, dks::benchmark_time_t>> sorted_times {results.begin(), results.end()};
+  vector<pair<dks::attributes_t, dks::benchmark_time_t>> sorted_times{
+      results.begin(), results.end()};
   std::sort(sorted_times.begin(), sorted_times.end(),
-      [](const decltype(sorted_times)::value_type& a,
-         const decltype(sorted_times)::value_type& b){
-        return a.second < b.second;
-      });
+            [](const decltype(sorted_times)::value_type &a,
+               const decltype(sorted_times)::value_type &b) {
+              return a.second < b.second;
+            });
 
-  for (const auto& kv : sorted_times){
+  for (const auto &kv : sorted_times) {
     cout << kv.first << ": " << kv.second.count() << " seconds" << endl;
   }
 
