@@ -9,6 +9,7 @@ namespace dks {
 benchmark_result_t test_case_t::benchmark(const msa_t &msa,
                                           const model_t &model) {
   partition_t partition(msa, model, attributes());
+  partition.set_pattern_weights(msa);
   benchmark_result_t br;
 
   br[test_kernel_t::partial] = benchmark_partials(partition, model);

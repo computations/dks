@@ -79,19 +79,23 @@ double msa_t::column_entropy() const {
   }
   size_t sequence_len = _sequences[0].size();
   double entropy = 0.0;
+  uint64_t max_states = 0;
   for (size_t i = 0; i < sequence_len; ++i) {
     std::unordered_map<char, uint64_t> counts;
     for (const auto &s : _sequences) {
       counts[s[i]] += 1;
     }
-    double site_entropy;
+    double site_entropy = 0.0;
+    max_states = std::max(max_states, counts.size());
     for (const auto &kv : counts) {
       double px = static_cast<double>(kv.second) / taxa_count;
       site_entropy += std::log2(px) * px;
     }
     entropy -= site_entropy;
   }
-  return entropy / sequence_len;
+  std::cout << (entropy / sequence_len) / -std::log2(1.0 / max_states)
+            << std::endl;
+  return (entropy / sequence_len) / -std::log2(1.0 / max_states);
 }
 
 msa_compressed_t::msa_compressed_t(const msa_t &msa) {
