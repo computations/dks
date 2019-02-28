@@ -93,8 +93,6 @@ double msa_t::column_entropy() const {
     }
     entropy -= site_entropy;
   }
-  std::cout << (entropy / sequence_len) / -std::log2(1.0 / max_states)
-            << std::endl;
   return (entropy / sequence_len) / -std::log2(1.0 / max_states);
 }
 
