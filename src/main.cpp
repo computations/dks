@@ -12,6 +12,7 @@ using namespace std;
 
 option cli_options[] = {
     {"msa", required_argument, 0, 0},
+    {"states", required_argument, 0, 0},
     {0, 0, 0, 0},
 };
 
@@ -19,10 +20,14 @@ int main(int argc, char **argv) {
   int opt_index;
   string filename;
   char c;
+  size_t states = 4;
   while ((c = getopt_long(argc, argv, "", cli_options, &opt_index)) == 0) {
     switch (opt_index) {
     case 0:
       filename = string(optarg);
+      break;
+    case 1:
+      states = std::stoi(optarg);
       break;
     }
   }
@@ -31,7 +36,7 @@ int main(int argc, char **argv) {
     return 1;
   }
 
-  dks::msa_t msa(filename);
+  dks::msa_t msa(filename, states);
   dks::model_t model(msa);
   dks::kernel_weight_t kw{
       {dks::test_kernel_t::likelihood, 1.0 / 4.0},

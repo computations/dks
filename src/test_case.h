@@ -55,7 +55,7 @@ public:
         _pattern_tip{false}, _site_repeats{false}, _rate_scalers{false} {}
 
   test_case_t(test_cpu_t cpu, bool pt, bool sr, bool rs, uint64_t seed)
-      : _cpu{cpu}, _trials{30}, _random_seed{seed}, _pattern_tip{pt},
+      : _cpu{cpu}, _trials{1}, _random_seed{seed}, _pattern_tip{pt},
         _site_repeats{sr}, _rate_scalers{rs} {}
 
   test_case_t(test_cpu_t cpu) : test_case_t{cpu, 0, 0, 0, 0} {}

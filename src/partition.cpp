@@ -14,7 +14,7 @@ partition_t::partition_t(const msa_t &msa, const model_t &model,
 
   _partition = pll_partition_create(tip_count,               // tips
                                     inner_count,             // clv_buffers
-                                    model.states(),          // states
+                                    msa.states(),            // states
                                     msa.length(),            // sites
                                     model.submodels(),       // rate_matrices
                                     2 * tip_count - 3,       // prob_matrices
@@ -73,13 +73,11 @@ void partition_t::update_partials(const std::vector<pll_operation_t> &ops) {
   pll_update_partials(_partition, ops.data(), ops.size());
 }
 
-
 void partition_t::set_pattern_weights(const msa_compressed_t &msa) {
   pll_set_pattern_weights(_partition, msa.weights());
 }
 
-void partition_t::set_pattern_weights(const msa_t &) {
-}
+void partition_t::set_pattern_weights(const msa_t &) {}
 
 void partition_t::update_partials(const tree_t &tree) {
   update_partials(tree.make_operations());

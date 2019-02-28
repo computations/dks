@@ -6,9 +6,13 @@
 #include <unordered_map>
 
 namespace dks {
-msa_t::msa_t(const pll_msa_t *msa) { init(msa); }
+msa_t::msa_t(const pll_msa_t *msa) { init(msa); _states = 4; }
 
-msa_t::msa_t(const std::string &filename) {
+msa_t::msa_t(const pll_msa_t *msa, size_t states) : _states(states) {
+  init(msa);
+}
+
+msa_t::msa_t(const std::string &filename, size_t states) {
   if (pll_phylip_t *fd = pll_phylip_open(filename.c_str(), pll_map_phylip)) {
     pll_msa_t *pll_msa = nullptr;
     if ((pll_msa = pll_phylip_parse_interleaved(fd)) ||
@@ -16,6 +20,7 @@ msa_t::msa_t(const std::string &filename) {
       init(pll_msa);
       pll_msa_destroy(pll_msa);
       pll_phylip_close(fd);
+      _states = states;
       return;
     } else {
       pll_phylip_close(fd);
@@ -41,6 +46,7 @@ msa_t::msa_t(const std::string &filename) {
       _labels.emplace_back(header);
       free(header);
     }
+      _states = states;
     pll_fasta_close(fd);
   }
   if (!valid()) {
@@ -68,7 +74,13 @@ const char *msa_t::label(size_t i) const { return _labels[i].data(); }
 
 const char *msa_t::sequence(size_t i) const { return _sequences[i].data(); }
 
-const pll_state_t *msa_t::char_map() const { return pll_map_nt; }
+const pll_state_t *msa_t::char_map() const {
+  if (states() == 4)
+    return pll_map_nt;
+  if (states() == 20)
+    return pll_map_aa;
+  throw std::runtime_error("no state map found for msa");
+}
 
 bool msa_t::valid() const { return _sequences.size() > 0; }
 
@@ -96,6 +108,9 @@ double msa_t::column_entropy() const {
   return (entropy / sequence_len) / -std::log2(1.0 / max_states);
 }
 
+inline size_t msa_t::states() const { return _states; }
+void msa_t::set_states(size_t s) { _states = s;}
+
 msa_compressed_t::msa_compressed_t(const msa_t &msa) {
   char **tmp_sequences = (char **)malloc(msa.count() * sizeof(char *));
   for (size_t i = 0; i < msa.count(); i++) {
@@ -109,6 +124,10 @@ msa_compressed_t::msa_compressed_t(const msa_t &msa) {
   unsigned int *tmp_weights = pll_compress_site_patterns(
       tmp_sequences, msa.char_map(), msa.count(), &tmp_length);
 
+  if (!tmp_weights) {
+    throw std::runtime_error(std::string("failed to compress the msa: ") +
+                             pll_errmsg);
+  }
   _weights = std::vector<unsigned int>(tmp_weights, tmp_weights + tmp_length);
 
   for (size_t i = 0; i < msa.count(); i++) {
