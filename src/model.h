@@ -12,7 +12,7 @@ public:
   model_t(size_t tip_count) : model_t{tip_count, 0} {};
 
   model_t(const msa_t &msa, uint64_t seed)
-      : _tree{msa.count(), seed}, _states{4},
+      : _tree{msa.count(), seed}, _states{msa.states()},
         _subst_params((_states - 1) * (_states - 2), 1.0),
         _frequencies(_states, 1.0 / _states){};
 
