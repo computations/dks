@@ -6,7 +6,10 @@
 #include <unordered_map>
 
 namespace dks {
-msa_t::msa_t(const pll_msa_t *msa) { init(msa); _states = 4; }
+msa_t::msa_t(const pll_msa_t *msa) {
+  init(msa);
+  _states = 4;
+}
 
 msa_t::msa_t(const pll_msa_t *msa, size_t states) : _states(states) {
   init(msa);
@@ -46,7 +49,7 @@ msa_t::msa_t(const std::string &filename, size_t states) {
       _labels.emplace_back(header);
       free(header);
     }
-      _states = states;
+    _states = states;
     pll_fasta_close(fd);
   }
   if (!valid()) {
@@ -89,27 +92,37 @@ double msa_t::column_entropy() const {
   if (taxa_count == 0) {
     return 0.0;
   }
-  size_t sequence_len = _sequences[0].size();
+
   double entropy = 0.0;
   uint64_t max_states = 0;
-  for (size_t i = 0; i < sequence_len; ++i) {
-    std::unordered_map<char, uint64_t> counts;
+
+  size_t sequence_len = length();
+
+  for (size_t i = 0; i < sequence_len; i++) {
+    uint64_t counts[256] = {0};
     for (const auto &s : _sequences) {
-      counts[s[i]] += 1;
+      counts[static_cast<uint8_t>(s[i])] += 1;
     }
+
+    uint64_t states = 0;
     double site_entropy = 0.0;
-    max_states = std::max(max_states, counts.size());
-    for (const auto &kv : counts) {
-      double px = static_cast<double>(kv.second) / taxa_count;
-      site_entropy += std::log2(px) * px;
+    for (size_t j = 0; j < 256; j++) {
+      if (counts[j] == 0)
+        continue;
+      double px = static_cast<double>(counts[j]) / taxa_count;
+      states += 1;
+      site_entropy += px * std::log2(px);
     }
+
     entropy -= site_entropy;
+    max_states = std::max(max_states, states);
   }
+
   return (entropy / sequence_len) / -std::log2(1.0 / max_states);
 }
 
 inline size_t msa_t::states() const { return _states; }
-void msa_t::set_states(size_t s) { _states = s;}
+void msa_t::set_states(size_t s) { _states = s; }
 
 msa_compressed_t::msa_compressed_t(const msa_t &msa) {
   char **tmp_sequences = (char **)malloc(msa.count() * sizeof(char *));
