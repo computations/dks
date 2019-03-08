@@ -2,8 +2,16 @@
 #include "msa.h"
 #include "partition.h"
 #include <algorithm>
+#include <cmath>
 #include <unordered_map>
 #include <utility>
+
+#ifdef __linux__
+#include <fstream>
+#include <unistd.h>
+#elif _WIN32
+// nothing
+#endif
 
 namespace dks {
 inline benchmark_time_t weight_kernel_times(kernel_weight_t kw,
@@ -58,4 +66,39 @@ attributes_t select_kernel(const model_t &model, const msa_t &msa,
                           })
       ->first;
 }
+
+#ifdef __linux__
+std::string build_path(size_t cpu_number) {
+  std::string s;
+  s += "/sys/devices/system/cpu/cpu";
+  int leading_zeros = std::floor(std::log10(cpu_number));
+  for (int i = 0; i < leading_zeros; ++i) {
+    s += "0";
+  }
+  s += std::to_string(cpu_number);
+  s += "/topology/core_id";
+  return s;
+}
+
+size_t get_core_id(size_t cpu_number) {
+  std::string filename = build_path(cpu_number);
+  std::ifstream f(filename.c_str());
+  char buf[32];
+  f.getline(buf, 32);
+  return std::stoi(buf);
+}
+
+int physical_cpu_count() {
+  size_t cpu_max = 0;
+  size_t n_cpu = sysconf(_SC_NPROCESSORS_ONLN);
+  for (size_t i = 0; i < n_cpu; ++i) {
+    size_t core_id = get_core_id(i);
+    cpu_max = core_id > cpu_max ? core_id : cpu_max;
+  }
+  return cpu_max + 1;
+}
+
+#elif _WIN32
+int physical_cpu_count() { return -1; }
+#endif
 } // namespace dks
