@@ -39,10 +39,10 @@ int main(int argc, char **argv) {
   dks::msa_t msa(filename, states);
   dks::model_t model(msa);
   dks::kernel_weight_t kw{
-      {dks::test_kernel_t::likelihood, 1.0 / 4.0},
-      {dks::test_kernel_t::partial, 1.0 / 4.0},
-      {dks::test_kernel_t::derivative, 1 / 8.0},
-      {dks::test_kernel_t::pmatrix, 1 / 8.0},
+      {dks::test_kernel_t::likelihood, .187},
+      {dks::test_kernel_t::partial, .414},
+      {dks::test_kernel_t::derivative, .388},
+      {dks::test_kernel_t::pmatrix, .001},
   };
 
   auto results = dks::select_kernel_verbose(model, msa, kw);

@@ -73,6 +73,20 @@ void partition_t::update_partials(const std::vector<pll_operation_t> &ops) {
   pll_update_partials(_partition, ops.data(), ops.size());
 }
 
+void partition_t::update_site_repeats(const tree_t &tree) {
+  update_site_repeats(tree.make_operations());
+}
+
+void partition_t::update_site_repeats(const model_t &model) {
+  update_site_repeats(model.make_operations());
+}
+
+void partition_t::update_site_repeats(const std::vector<pll_operation_t> &ops) {
+  for (size_t i = 0; i < ops.size(); i++) {
+    pll_update_repeats(_partition, &ops[i]);
+  }
+}
+
 void partition_t::set_pattern_weights(const msa_compressed_t &msa) {
   pll_set_pattern_weights(_partition, msa.weights());
 }
@@ -85,6 +99,10 @@ void partition_t::update_partials(const tree_t &tree) {
 
 void partition_t::update_partials(const model_t &model) {
   update_partials(model.tree());
+}
+
+void partition_t::invalidate_prob_matrix() {
+  *_partition->eigen_decomp_valid = 0;
 }
 
 double partition_t::loglh(const tree_t &tree) {

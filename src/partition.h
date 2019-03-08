@@ -29,6 +29,12 @@ public:
   void update_partials(const tree_t &tree);
   void update_partials(const model_t &model);
 
+  void update_site_repeats(const std::vector<pll_operation_t> &);
+  void update_site_repeats(const tree_t &tree);
+  void update_site_repeats(const model_t &model);
+
+  void invalidate_prob_matrix();
+
   void update_sumtable(const tree_t &tree);
   derivative_t compute_derivative(const tree_t &tree, double brlen = 1.0);
 

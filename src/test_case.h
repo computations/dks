@@ -38,8 +38,7 @@ struct attributes_t {
   attributes_t() = default;
 
   attributes_t(bool pc, bool sr, bool rs, test_cpu_t simd)
-      : pattern_tip{pc},  site_repeats{sr},
-        rate_scalers{rs}, simd{simd} {};
+      : pattern_tip{pc}, site_repeats{sr}, rate_scalers{rs}, simd{simd} {};
 
   bool operator==(const attributes_t &other) const {
     return pattern_tip == other.pattern_tip &&
@@ -55,7 +54,7 @@ public:
         _pattern_tip{false}, _site_repeats{false}, _rate_scalers{false} {}
 
   test_case_t(test_cpu_t cpu, bool pt, bool sr, bool rs, uint64_t seed)
-      : _cpu{cpu}, _trials{1}, _random_seed{seed}, _pattern_tip{pt},
+      : _cpu{cpu}, _trials{10}, _random_seed{seed}, _pattern_tip{pt},
         _site_repeats{sr}, _rate_scalers{rs} {}
 
   test_case_t(test_cpu_t cpu) : test_case_t{cpu, 0, 0, 0, 0} {}
@@ -73,6 +72,8 @@ public:
                                      const model_t &model);
   benchmark_time_t benchmark_derivative(partition_t &partition,
                                         const model_t &model);
+  benchmark_time_t benchmark_update_site_repeats(partition_t &partition,
+                                                 const model_t &model);
   unsigned int attributes() const;
   unsigned int cpu_attributes() const;
   unsigned int misc_attributes() const;
