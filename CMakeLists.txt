@@ -20,6 +20,9 @@ if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
     endif()
 endif()
 
+set (CMAKE_CXX_FLAGS_RELEASE  "-O3"    CACHE INTERNAL "")
+set (CMAKE_C_FLAGS_RELEASE  "-O3"    CACHE INTERNAL "")
+
 add_subdirectory(lib)
 
 add_subdirectory(src)
