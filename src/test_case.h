@@ -37,8 +37,8 @@ struct attributes_t {
 
   attributes_t() = default;
 
-  attributes_t(bool pc, bool sr, bool rs, test_cpu_t simd)
-      : pattern_tip{pc}, site_repeats{sr}, rate_scalers{rs}, simd{simd} {};
+  attributes_t(bool pt, bool sr, bool rs, test_cpu_t simd)
+      : pattern_tip{pt}, site_repeats{sr}, rate_scalers{rs}, simd{simd} {};
 
   bool operator==(const attributes_t &other) const {
     return pattern_tip == other.pattern_tip &&

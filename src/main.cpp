@@ -38,6 +38,8 @@ int main(int argc, char **argv) {
 
   dks::msa_t msa(filename, states);
   dks::model_t model(msa);
+  std::cout<<"row entropy: "<<msa.row_entropy()<<std::endl;
+  std::cout<<"col entropy: "<<msa.column_entropy()<<std::endl;
   dks::kernel_weight_t kw{
       {dks::test_kernel_t::likelihood, .187},
       {dks::test_kernel_t::partial, .414},
@@ -45,7 +47,7 @@ int main(int argc, char **argv) {
       {dks::test_kernel_t::pmatrix, .001},
   };
 
-  auto results = dks::select_kernel_verbose(model, msa, kw);
+  auto results = dks::select_kernel_verbose(model, msa, kw, true);
 
   vector<pair<dks::attributes_t, dks::benchmark_time_t>> sorted_times{
       results.begin(), results.end()};

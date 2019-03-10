@@ -13,5 +13,5 @@ TEST_CASE("benchmark simple") {
       {dks::test_kernel_t::pmatrix, 0.25},
   };
 
-  dks::select_kernel(model, msa, kw);
+  dks::select_kernel(model, msa, kw, false);
 }

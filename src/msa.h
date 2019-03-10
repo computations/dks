@@ -26,6 +26,7 @@ public:
   void set_states(size_t);
 
   double column_entropy() const;
+  double row_entropy() const;
 
 protected:
   std::vector<sequence_t> _sequences;

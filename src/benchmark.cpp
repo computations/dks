@@ -14,6 +14,7 @@
 #endif
 
 namespace dks {
+
 inline benchmark_time_t weight_kernel_times(kernel_weight_t kw,
                                             benchmark_result_t bmr) {
   return kw[test_kernel_t::partial] * bmr[test_kernel_t::partial] +
@@ -22,16 +23,81 @@ inline benchmark_time_t weight_kernel_times(kernel_weight_t kw,
          kw[test_kernel_t::pmatrix] * bmr[test_kernel_t::pmatrix];
 }
 
+inline attributes_t best_attrib_time(const attributes_time_t &at) {
+  return std::max_element(at.begin(), at.end(),
+                          [](const attributes_time_t::value_type &a,
+                             const attributes_time_t::value_type &b) {
+                            return a.second > b.second;
+                          })
+      ->first;
+}
+
 attributes_t select_kernel(const pll_partition_t *pll_partition,
-                           const pll_msa_t *pll_msa,
-                           const kernel_weight_t &kw) {
+                           const pll_msa_t *pll_msa, const kernel_weight_t &kw,
+                           bool fast) {
   msa_t msa{pll_msa};
   model_t model{pll_partition};
-  return select_kernel(model, msa, kw);
+  return select_kernel(model, msa, kw, fast);
 }
 
 attributes_time_t select_kernel_verbose(const model_t &model, const msa_t &msa,
-                                        const kernel_weight_t &kw) {
+                                        const kernel_weight_t &kw, bool fast) {
+  return fast ? select_kernel_fast_verbose(model, msa, kw)
+              : select_kernel_slow_verbose(model, msa, kw);
+}
+
+/*
+ * Select the attributes in pairs, so that we can eliminate some of the
+ * searching. The order is
+ *   1. SIMD
+ *   2. (Site repeats, tip pattern, none)
+ *   3. Rate scalers
+ * for the others, we assume a default set of parameters that are likely too be
+ * correct.
+ */
+attributes_time_t select_kernel_fast_verbose(const model_t &model,
+                                             const msa_t &msa,
+                                             const kernel_weight_t &kw) {
+  attributes_time_t times;
+  msa_compressed_t cmsa(msa);
+  double msa_entropy = cmsa.row_entropy();
+
+  attributes_t attribs(false, true, true, test_cpu_t::avx);
+
+  for (int i = test_cpu_t::avx2; i >= test_cpu_t::none; --i) {
+    attribs.simd = static_cast<test_cpu_t>(i);
+    test_case_t tc(attribs);
+    times[attribs] = weight_kernel_times(kw, tc.benchmark(msa, model));
+    std::cout<< "timing " << attribs <<":" << times[attribs].count()<<std::endl;
+    if (attribs.site_repeats){
+      times[attribs] *= msa_entropy;
+    }
+  }
+
+  attribs = best_attrib_time(times);
+
+  for (size_t i = 0; i < 2; ++i) {
+    attribs.site_repeats = false;
+    attribs.pattern_tip = static_cast<bool>(i);
+    test_case_t tc(attribs);
+    times[attribs] = weight_kernel_times(kw, tc.benchmark(msa, model));
+    std::cout<< "timing " << attribs <<":" << times[attribs].count()<<std::endl;
+  }
+
+  attribs = best_attrib_time(times);
+
+  for (size_t i = 0; i < 2; ++i) {
+    attribs.rate_scalers = static_cast<bool>(i);
+    test_case_t tc(attribs);
+    times[attribs] = weight_kernel_times(kw, tc.benchmark(msa, model));
+  }
+
+  return times;
+}
+
+attributes_time_t select_kernel_slow_verbose(const model_t &model,
+                                             const msa_t &msa,
+                                             const kernel_weight_t &kw) {
   attributes_time_t times;
   msa_compressed_t cmsa(msa);
   double msa_entropy = cmsa.column_entropy();
@@ -57,14 +123,9 @@ attributes_time_t select_kernel_verbose(const model_t &model, const msa_t &msa,
 }
 
 attributes_t select_kernel(const model_t &model, const msa_t &msa,
-                           const kernel_weight_t &kw) {
-  auto times = select_kernel_verbose(model, msa, kw);
-  return std::max_element(times.begin(), times.end(),
-                          [](const attributes_time_t::value_type &a,
-                             const attributes_time_t::value_type &b) {
-                            return a.second < b.second;
-                          })
-      ->first;
+                           const kernel_weight_t &kw, bool fast) {
+  auto times = select_kernel_verbose(model, msa, kw, fast);
+  return best_attrib_time(times);
 }
 
 #ifdef __linux__

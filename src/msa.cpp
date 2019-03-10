@@ -11,6 +11,7 @@ msa_t::msa_t(const pll_msa_t *msa) {
   _states = 4;
 }
 
+
 msa_t::msa_t(const pll_msa_t *msa, size_t states) : _states(states) {
   init(msa);
 }
@@ -118,7 +119,41 @@ double msa_t::column_entropy() const {
     max_states = std::max(max_states, states);
   }
 
-  return (entropy / sequence_len) / -std::log2(1.0 / max_states);
+  return 1 - (entropy / sequence_len) / -std::log2(1.0 / max_states);
+}
+
+double msa_t::row_entropy() const {
+  uint64_t taxa_count = _sequences.size();
+  if (taxa_count == 0) {
+    return 0.0;
+  }
+
+  double entropy = 0.0;
+  uint64_t max_states = 0;
+
+  size_t sequence_len = length();
+
+  for (const auto &s : _sequences) {
+    uint64_t counts[256] = {0};
+    for (size_t i = 0; i < sequence_len; i++) {
+      counts[static_cast<uint8_t>(s[i])] += 1;
+    }
+
+    uint64_t states = 0;
+    double site_entropy = 0.0;
+    for (size_t j = 0; j < 256; j++) {
+      if (counts[j] == 0)
+        continue;
+      double px = static_cast<double>(counts[j]) / sequence_len;
+      states += 1;
+      site_entropy += px * std::log2(px);
+    }
+
+    entropy -= site_entropy;
+    max_states = std::max(max_states, states);
+  }
+
+  return 1 - (entropy / taxa_count) / -std::log2(1.0 / max_states);
 }
 
 inline size_t msa_t::states() const { return _states; }
