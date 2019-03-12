@@ -14,7 +14,7 @@ TEST_CASE("fasta file constructor", "[msa][constructor][fasta]") {
 
   CHECK(msa.count() == 767);
   CHECK(msa.length() == 5814);
-  CHECK(msa.column_entropy() == Approx(0.2558547326));
+  CHECK(msa.column_entropy() == Approx(0.7441452674));
 }
 
 TEST_CASE("phylip file constructor", "[msa][constructor][phylip]") {
@@ -22,7 +22,7 @@ TEST_CASE("phylip file constructor", "[msa][constructor][phylip]") {
 
   CHECK(msa.count() == 101);
   CHECK(msa.length() == 1858);
-  CHECK(msa.column_entropy() == Approx(0.30155679));
+  CHECK(msa.column_entropy() == Approx(0.69844321));
 }
 
 TEST_CASE("pll_msa_t constructor", "[msa][pll]") {
@@ -43,7 +43,7 @@ TEST_CASE("protein data", "[msa][protein][phylip]") {
   msa.set_states(20);
   CHECK(msa.count() == 775);
   CHECK(msa.length() == 4519);
-  CHECK(msa.column_entropy() == Approx(0.190867206));
+  CHECK(msa.column_entropy() == Approx(0.809132794));
   CHECK(msa.states() == 20);
   for (size_t i = 0; i < 256; ++i) {
     CHECK(msa.char_map()[i] == pll_map_aa[i]);
@@ -57,7 +57,7 @@ TEST_CASE("compressed msa") {
 
     CHECK(cmsa.count() == 101);
     CHECK(cmsa.length() == 1630);
-    CHECK(cmsa.column_entropy() == Approx(0.3414964886));
+    CHECK(cmsa.column_entropy() == Approx(0.6585035114));
   }
   {
     dks::msa_t msa(data[2], 20);
@@ -65,6 +65,6 @@ TEST_CASE("compressed msa") {
 
     CHECK(cmsa.count() == 775);
     CHECK(cmsa.length() == 3838);
-    CHECK(cmsa.column_entropy() == Approx(0.21699028));
+    CHECK(cmsa.column_entropy() == Approx(0.78300972));
   }
 }
