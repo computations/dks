@@ -27,6 +27,9 @@ benchmark_result_t test_case_t::benchmark(const msa_t &msa,
 
 benchmark_time_t test_case_t::benchmark_partials(partition_t &partition,
                                                  const model_t &model) {
+  for (size_t i = 0; i < _trials; i++) {
+    partition.update_partials(model);
+  }
   auto t1 = std::chrono::high_resolution_clock::now();
   for (size_t i = 0; i < _trials; i++) {
     partition.update_partials(model);
@@ -38,6 +41,9 @@ benchmark_time_t test_case_t::benchmark_partials(partition_t &partition,
 benchmark_time_t test_case_t::benchmark_likelihood(partition_t &partition,
                                                    const model_t &model) {
   partition.update_partials(model);
+  for (size_t i = 0; i < _trials; i++) {
+    partition.loglh(model);
+  }
   auto t1 = std::chrono::high_resolution_clock::now();
   for (size_t i = 0; i < _trials; i++) {
     partition.loglh(model);
@@ -48,6 +54,9 @@ benchmark_time_t test_case_t::benchmark_likelihood(partition_t &partition,
 
 benchmark_time_t test_case_t::benchmark_pmatrix(partition_t &partition,
                                                 const model_t &model) {
+  for (size_t i = 0; i < _trials; i++) {
+    partition.update_probability_matrices(model.tree());
+  }
   auto t1 = std::chrono::high_resolution_clock::now();
   for (size_t i = 0; i < _trials; i++) {
     partition.update_probability_matrices(model.tree());
@@ -58,6 +67,10 @@ benchmark_time_t test_case_t::benchmark_pmatrix(partition_t &partition,
 
 benchmark_time_t test_case_t::benchmark_derivative(partition_t &partition,
                                                    const model_t &model) {
+  for (size_t i = 0; i < _trials; i++) {
+    partition.update_sumtable(model.tree());
+    partition.compute_derivative(model.tree());
+  }
   auto t1 = std::chrono::high_resolution_clock::now();
   for (size_t i = 0; i < _trials; i++) {
     partition.update_sumtable(model.tree());
@@ -70,6 +83,9 @@ benchmark_time_t test_case_t::benchmark_derivative(partition_t &partition,
 benchmark_time_t
 test_case_t::benchmark_update_site_repeats(partition_t &partition,
                                            const model_t &model) {
+  for (size_t i = 0; i < _trials; i++) {
+    partition.update_site_repeats(model);
+  }
   auto t1 = std::chrono::high_resolution_clock::now();
   for (size_t i = 0; i < _trials; i++) {
     partition.update_site_repeats(model);

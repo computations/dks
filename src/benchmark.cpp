@@ -32,6 +32,23 @@ inline attributes_t best_attrib_time(const attributes_time_t &at) {
       ->first;
 }
 
+kernel_weight_t suggest_weights(const msa_t &msa) {
+  kernel_weight_t kw;
+  double taxa = msa.count();
+  double sites = msa.length();
+  double states = msa.states();
+
+  kw[test_kernel_t::partial] =
+      0.007156765 * taxa + -2.719444e-05 * sites + 1.328822 + states + 37.70555;
+  kw[test_kernel_t::likelihood] = 0.0001289232 * sites + -0.004789004 * taxa +
+                                  -0.9559354 * states + 35.20843;
+  kw[test_kernel_t::derivative] = 2.240574e-06 * sites + -0.003947451 * taxa +
+                                  -0.6615589 * states + 25.72586;
+  kw[test_kernel_t::pmatrix] = -0.0001090363 * sites + 0.001506259 * sites +
+                               0.2866474 * states + 1.448459;
+  return kw;
+}
+
 attributes_t select_kernel(const pll_partition_t *pll_partition,
                            const pll_msa_t *pll_msa, const kernel_weight_t &kw,
                            bool fast) {
@@ -68,8 +85,9 @@ attributes_time_t select_kernel_fast_verbose(const model_t &model,
     attribs.simd = static_cast<test_cpu_t>(i);
     test_case_t tc(attribs);
     times[attribs] = weight_kernel_times(kw, tc.benchmark(msa, model));
-    std::cout<< "timing " << attribs <<":" << times[attribs].count()<<std::endl;
-    if (attribs.site_repeats){
+    std::cout << "timing " << attribs << ":" << times[attribs].count()
+              << std::endl;
+    if (attribs.site_repeats) {
       times[attribs] *= msa_entropy;
     }
   }
@@ -81,15 +99,18 @@ attributes_time_t select_kernel_fast_verbose(const model_t &model,
     attribs.pattern_tip = static_cast<bool>(i);
     test_case_t tc(attribs);
     times[attribs] = weight_kernel_times(kw, tc.benchmark(msa, model));
-    std::cout<< "timing " << attribs <<":" << times[attribs].count()<<std::endl;
+    std::cout << "timing " << attribs << ":" << times[attribs].count()
+              << std::endl;
   }
 
   attribs = best_attrib_time(times);
 
-  for (size_t i = 0; i < 2; ++i) {
+  for (size_t i = 0; i < 1; ++i) {
     attribs.rate_scalers = static_cast<bool>(i);
     test_case_t tc(attribs);
     times[attribs] = weight_kernel_times(kw, tc.benchmark(msa, model));
+    std::cout << "timing " << attribs << ":" << times[attribs].count()
+              << std::endl;
   }
 
   return times;
