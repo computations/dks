@@ -17,7 +17,7 @@ msa_t::msa_t(const pll_msa_t *msa, size_t states) : _states(states) {
 }
 
 msa_t::msa_t(const std::string &filename, size_t states) {
-  if (pll_phylip_t *fd = pll_phylip_open(filename.c_str(), pll_map_phylip)) {
+  if (pll_phylip_t *fd = pll_phylip_open(filename.c_str(), pll_map_generic)) {
     pll_msa_t *pll_msa = nullptr;
     if ((pll_msa = pll_phylip_parse_interleaved(fd)) ||
         (pll_msa = pll_phylip_parse_sequential(fd))) {
