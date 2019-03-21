@@ -46,6 +46,10 @@ kernel_weight_t suggest_weights(const msa_t &msa) {
                                   -0.6615589 * states + 25.72586;
   kw[test_kernel_t::pmatrix] = -0.0001090363 * sites + 0.001506259 * sites +
                                0.2866474 * states + 1.448459;
+
+  for (auto &kv : kw) {
+    kv.second = kv.second < 0.0 ? 0.0 : kv.second;
+  }
   return kw;
 }
 
