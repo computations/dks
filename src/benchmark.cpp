@@ -77,7 +77,6 @@ attributes_time_t select_kernel_fast_verbose(const model_t &model,
                                              const kernel_weight_t &kw) {
   attributes_time_t times;
   msa_compressed_t cmsa(msa);
-  double msa_entropy = cmsa.row_entropy();
 
   attributes_t attribs(false, true, true, test_cpu_t::avx);
 
@@ -87,9 +86,6 @@ attributes_time_t select_kernel_fast_verbose(const model_t &model,
     times[attribs] = weight_kernel_times(kw, tc.benchmark(msa, model));
     std::cout << "timing " << attribs << ":" << times[attribs].count()
               << std::endl;
-    if (attribs.site_repeats) {
-      times[attribs] *= msa_entropy;
-    }
   }
 
   attribs = best_attrib_time(times);
@@ -121,7 +117,6 @@ attributes_time_t select_kernel_slow_verbose(const model_t &model,
                                              const kernel_weight_t &kw) {
   attributes_time_t times;
   msa_compressed_t cmsa(msa);
-  double msa_entropy = cmsa.column_entropy();
   for (uint8_t bit_attribs = 0; bit_attribs < 0x8; ++bit_attribs) {
     for (uint8_t simd = test_cpu_t::none; simd <= test_cpu_t::avx2; ++simd) {
       if (static_cast<bool>(bit_attribs & (1 << 0)) &&
@@ -135,9 +130,6 @@ attributes_time_t select_kernel_slow_verbose(const model_t &model,
                            static_cast<test_cpu_t>(simd));
       test_case_t tc(attribs);
       times[attribs] = weight_kernel_times(kw, tc.benchmark(msa, model));
-      if (attribs.site_repeats) {
-        times[attribs] *= msa_entropy;
-      }
     }
   }
   return times;

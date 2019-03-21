@@ -17,11 +17,6 @@ benchmark_result_t test_case_t::benchmark(const msa_t &msa,
   br[test_kernel_t::pmatrix] = benchmark_pmatrix(partition, model);
   br[test_kernel_t::derivative] = benchmark_derivative(partition, model);
 
-  if (partition.attributes() & PLL_ATTRIB_SITE_REPEATS) {
-    br[test_kernel_t::partial] =
-        benchmark_update_site_repeats(partition, model);
-  }
-
   return br;
 }
 
