@@ -97,6 +97,13 @@ template <> struct hash<dks::attributes_t> {
            (s.rate_scalers << 2) ^ (s.simd << 3);
   }
 };
+template <> struct hash<dks::test_kernel_t> {
+  typedef dks::test_kernel_t argument_type;
+  typedef size_t result_type;
+  result_type operator()(const argument_type &s) const noexcept {
+    return static_cast<int>(s);
+  }
+};
 } // namespace std
 
 std::ostream &operator<<(std::ostream &stream, const dks::test_cpu_t &cpu);
