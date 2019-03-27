@@ -138,9 +138,9 @@ std::ostream &operator<<(std::ostream &stream, const dks::test_cpu_t &cpu) {
 
 std::ostream &operator<<(std::ostream &stream,
                          const dks::attributes_t &attribs) {
-  stream << "(cpu: " << attribs.simd << std::boolalpha
-         << ", pattern tip: " << attribs.pattern_tip
-         << ", rate scalers: " << attribs.rate_scalers
-         << ", site repeats: " << attribs.site_repeats << ")";
+  stream << "{\"cpu\": \"" << attribs.simd << "\"" << std::boolalpha
+         << ", \"pattern tip\": \"" << attribs.pattern_tip << "\""
+         << ", \"rate scalers\": \"" << attribs.rate_scalers << "\""
+         << ", \"site repeats\": \"" << attribs.site_repeats << "\"}";
   return stream;
 }

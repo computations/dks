@@ -38,24 +38,10 @@ int main(int argc, char **argv) {
 
   dks::msa_t msa(filename, states);
   dks::model_t model(msa);
-  std::cout<<"row entropy: "<<msa.row_entropy()<<std::endl;
-  std::cout<<"col entropy: "<<msa.column_entropy()<<std::endl;
-  /*
-  dks::kernel_weight_t kw{
-      {dks::test_kernel_t::likelihood, .187},
-      {dks::test_kernel_t::partial, .414},
-      {dks::test_kernel_t::derivative, .388},
-      {dks::test_kernel_t::pmatrix, .001},
-  };
-  */
 
   dks::kernel_weight_t kw = dks::suggest_weights(msa);
-  std::cout<<kw[dks::test_kernel_t::likelihood]<<std::endl;
-  std::cout<<kw[dks::test_kernel_t::partial]<<std::endl;
-  std::cout<<kw[dks::test_kernel_t::derivative]<<std::endl;
-  std::cout<<kw[dks::test_kernel_t::pmatrix]<<std::endl;
 
-  auto results = dks::select_kernel_verbose(model, msa, kw, true);
+  auto results = dks::select_kernel_verbose(model, msa, kw, false);
 
   vector<pair<dks::attributes_t, dks::benchmark_time_t>> sorted_times{
       results.begin(), results.end()};
@@ -66,7 +52,8 @@ int main(int argc, char **argv) {
             });
 
   for (const auto &kv : sorted_times) {
-    cout << kv.first << ": " << kv.second.count() << " seconds" << endl;
+    cout << "{\"attributes\":" << kv.first
+         << ", \"score\": " << kv.second.count() << "}" << endl;
   }
 
   return 0;
