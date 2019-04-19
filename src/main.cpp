@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
   dks::msa_t msa(filename, states);
   dks::model_t model(msa);
 
-  dks::kernel_weight_t kw = dks::suggest_weights(msa);
+  dks::kernel_weight_t kw = dks::suggest_weights_2(msa);
 
   auto results = dks::select_kernel_verbose(model, msa, kw, false);
 

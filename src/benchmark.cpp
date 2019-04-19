@@ -53,6 +53,27 @@ kernel_weight_t suggest_weights(const msa_t &msa) {
   return kw;
 }
 
+kernel_weight_t suggest_weights_2(const msa_t &msa) {
+  kernel_weight_t kw;
+  double taxa = msa.count();
+  double sites = msa.length();
+  double states = msa.states();
+
+  kw[test_kernel_t::partial] =
+      0.6179 * sites + 555.3935 * states + 9.1931 * taxa - 4225.1437;
+  kw[test_kernel_t::likelihood] =
+      0.4135 * sites + 28.5882 * states + 1.5804 * taxa + 208.3213;
+  kw[test_kernel_t::derivative] =
+      0.2741 * sites + 27.2130 * states + 1.0851 * taxa + 58.0919;
+  kw[test_kernel_t::pmatrix] =
+      3.741e-03 * sites + 3.177e+01 * states + 1.097e+00 * taxa + -2.841e+02;
+
+  for (auto &kv : kw) {
+    kv.second = kv.second < 0.0 ? 0.0 : kv.second;
+  }
+  return kw;
+}
+
 attributes_t select_kernel(const pll_partition_t *pll_partition,
                            const pll_msa_t *pll_msa, const kernel_weight_t &kw,
                            bool fast) {
