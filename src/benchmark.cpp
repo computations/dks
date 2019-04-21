@@ -60,16 +60,16 @@ kernel_weight_t suggest_weights_2(const msa_t &msa) {
   double states = msa.states();
 
   kw[test_kernel_t::partial] =
-      0.6179 * sites + 555.3935 * states + 9.1931 * taxa - 4225.1437;
+      0.4866 * sites + 437.1470 * states + 6.5094 * taxa - 3557.8645;
   kw[test_kernel_t::likelihood] =
-      0.4135 * sites + 28.5882 * states + 1.5804 * taxa + 208.3213;
+      0.327 * sites + 28.952 * states + 1.147 * taxa + -43.042;
   kw[test_kernel_t::derivative] =
-      0.2741 * sites + 27.2130 * states + 1.0851 * taxa + 58.0919;
+      0.2174 * sites + 26.1509 * states + 0.7898 * taxa + -108.6298;
   kw[test_kernel_t::pmatrix] =
-      3.741e-03 * sites + 3.177e+01 * states + 1.097e+00 * taxa + -2.841e+02;
+      3.221e-03 * sites + 2.672e+01 * states + 7.741e-01 * taxa + -2.195e+02;
 
   for (auto &kv : kw) {
-    kv.second = kv.second < 0.0 ? 0.0 : kv.second;
+    kv.second = kv.second < 0.0 ? 0.1 : kv.second;
   }
   return kw;
 }
@@ -142,7 +142,7 @@ attributes_time_t select_kernel_slow_verbose(const model_t &model,
                                              const kernel_weight_t &kw) {
   attributes_time_t times;
   msa_compressed_t cmsa(msa);
-  for (uint8_t bit_attribs = 0; bit_attribs < 0x8; ++bit_attribs) {
+  for (uint8_t bit_attribs = 0; bit_attribs < 0x4; ++bit_attribs) {
     for (uint8_t simd = test_cpu_t::none; simd <= test_cpu_t::avx2; ++simd) {
       if (static_cast<bool>(bit_attribs & (1 << 0)) &&
           static_cast<bool>(bit_attribs & (1 << 1))) {
@@ -151,7 +151,7 @@ attributes_time_t select_kernel_slow_verbose(const model_t &model,
 
       attributes_t attribs(static_cast<bool>(bit_attribs & (1 << 0)),
                            static_cast<bool>(bit_attribs & (1 << 1)),
-                           static_cast<bool>(bit_attribs & (1 << 2)),
+                           static_cast<bool>(0),
                            static_cast<test_cpu_t>(simd));
       test_case_t tc(attribs);
       times[attribs] = weight_kernel_times(kw, tc.benchmark(msa, model));

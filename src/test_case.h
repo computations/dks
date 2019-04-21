@@ -50,11 +50,11 @@ struct attributes_t {
 class test_case_t {
 public:
   test_case_t()
-      : _cpu{test_cpu_t::none}, _trials{10}, _random_seed{0},
+      : _cpu{test_cpu_t::none}, _trials{30}, _random_seed{0},
         _pattern_tip{false}, _site_repeats{false}, _rate_scalers{false} {}
 
   test_case_t(test_cpu_t cpu, bool pt, bool sr, bool rs, uint64_t seed)
-      : _cpu{cpu}, _trials{10}, _random_seed{seed}, _pattern_tip{pt},
+      : _cpu{cpu}, _trials{30}, _random_seed{seed}, _pattern_tip{pt},
         _site_repeats{sr}, _rate_scalers{rs} {}
 
   test_case_t(test_cpu_t cpu) : test_case_t{cpu, 0, 0, 0, 0} {}
@@ -74,6 +74,7 @@ public:
                                         const model_t &model);
   benchmark_time_t benchmark_update_site_repeats(partition_t &partition,
                                                  const model_t &model);
+  attributes_t attributes_struct() const;
   unsigned int attributes() const;
   unsigned int cpu_attributes() const;
   unsigned int misc_attributes() const;

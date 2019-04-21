@@ -89,6 +89,10 @@ test_case_t::benchmark_update_site_repeats(partition_t &partition,
   return (t2 - t1) / _trials;
 }
 
+attributes_t test_case_t::attributes_struct() const {
+  return attributes_t(_pattern_tip, _site_repeats, _rate_scalers, _cpu);
+}
+
 unsigned int test_case_t::attributes() const {
   return cpu_attributes() | misc_attributes();
 }
