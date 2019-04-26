@@ -170,7 +170,7 @@ attributes_t select_kernel(const model_t &model, const msa_t &msa,
 std::string build_path(size_t cpu_number) {
   std::string s;
   s += "/sys/devices/system/cpu/cpu";
-  int leading_zeros = std::floor(std::log10(cpu_number));
+  int leading_zeros = static_cast<int>(std::floor(std::log10(cpu_number)));
   for (int i = 0; i < leading_zeros; ++i) {
     s += "0";
   }
@@ -184,12 +184,12 @@ size_t get_core_id(size_t cpu_number) {
   std::ifstream f(filename.c_str());
   char buf[32];
   f.getline(buf, 32);
-  return std::stoi(buf);
+  return std::stoul(buf);
 }
 
-int physical_cpu_count() {
+size_t physical_cpu_count() {
   size_t cpu_max = 0;
-  size_t n_cpu = sysconf(_SC_NPROCESSORS_ONLN);
+  size_t n_cpu = static_cast<size_t>(sysconf(_SC_NPROCESSORS_ONLN));
   for (size_t i = 0; i < n_cpu; ++i) {
     size_t core_id = get_core_id(i);
     cpu_max = core_id > cpu_max ? core_id : cpu_max;
@@ -198,6 +198,6 @@ int physical_cpu_count() {
 }
 
 #elif _WIN32
-int physical_cpu_count() { return -1; }
+size_t physical_cpu_count() { return 0; }
 #endif
 } // namespace dks

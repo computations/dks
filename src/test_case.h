@@ -102,7 +102,7 @@ template <> struct hash<dks::test_kernel_t> {
   typedef dks::test_kernel_t argument_type;
   typedef size_t result_type;
   result_type operator()(const argument_type &s) const noexcept {
-    return static_cast<int>(s);
+    return static_cast<size_t>(s);
   }
 };
 } // namespace std
